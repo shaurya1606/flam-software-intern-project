@@ -138,17 +138,17 @@ queuectl status
 ```
 
 **Output:**
-```json
-{
-  "jobs": {
-    "pending": 1,
-    "processing": 0,
-    "completed": 0,
-    "failed": 0,
-    "dead": 0
-  },
-  "workers": 0
-}
+```
+Queue Status
+============
+
+Pending      : 1
+Processing   : 0
+Completed    : 0
+Failed       : 0
+Dead         : 0
+
+Workers      : 0
 ```
 
 **Start worker:**
@@ -186,19 +186,37 @@ queuectl list --state completed
 ```
 
 **Output:**
-```json
-[
-  {
-    "id": "hello",
-    "command": "echo Hello World",
-    "state": "completed",
-    "attempts": 1,
-    "max_retries": 3,
-    "created_at": "2025-01-15T10:30:00.000Z",
-    "updated_at": "2025-01-15T10:30:02.000Z",
-    "priority": 0
-  }
-]
+```
+Job ID       : hello
+State        : completed
+Attempts     : 1 / 3
+Priority     : 0
+
+Command
+-------
+echo Hello World
+
+Exit Code
+---------
+0
+
+STDOUT
+------
+Hello World
+
+STDERR
+------
+(empty)
+
+Created
+-------
+2025-01-15T10:30:00.000Z
+
+Updated
+-------
+2025-01-15T10:30:02.000Z
+
+---------------------------------------------
 ```
 
 ---
@@ -344,16 +362,100 @@ queuectl metrics
 ```
 
 **Output:**
-```json
-{
-  "total_jobs": 50,
-  "completed_jobs": 45,
-  "uptime": "120 min",
-  "total_commands": 150,
-  "average_runtime": 2,
-  "max_runtime": 10
-}
 ```
+QueueCTL Metrics
+================
+
+Queue Statistics
+----------------
+Total Jobs    : 50
+Pending       : N/A
+Processing    : N/A
+Completed     : 45
+Failed        : N/A
+Dead          : 3
+
+Workers
+-------
+Running       : 8
+
+Performance
+-----------
+Success Rate  : 90.00 %
+Failure Rate  : 6.00 %
+Retries       : 5
+
+Runtime
+-------
+Uptime        : 02:00:00
+Total Commands: 150
+Average Runtime: 2
+Max Runtime   : 10
+```
+
+## Quick Verification Checklist
+
+□ Build project
+
+□ Start daemon
+
+□ Enqueue job
+
+□ Start workers
+
+□ Verify completed state
+
+□ Verify failed command retries
+
+□ Verify DLQ
+
+□ Retry DLQ job
+
+□ Verify metrics
+
+□ Stop workers
+
+□ Restart daemon
+
+□ Verify persistence
+
+## Recording the Demo
+
+1. Build
+2. Start daemon
+3. Enqueue jobs
+4. Start workers
+5. Successful execution
+6. Failed command
+7. Retry
+8. DLQ
+9. Retry DLQ
+10. Metrics
+11. Config update
+12. Persistence after restart
+13. Worker stop
+14. Graceful daemon shutdown
+
+## Architecture
+
+                 QueueCTL
+
+              +------------+
+              | CLI Client |
+              +------------+
+                     |
+                  IPC Pipe
+                     |
+                     v
+            +----------------+
+            | Queue Daemon   |
+            +----------------+
+             |     |      |
+             |     |      +------ Worker Pool
+             |     |
+             |     +------------- Retry Manager
+             |
+             +------------------- SQLite Database
 
 ## 📂 Project Structure
 
