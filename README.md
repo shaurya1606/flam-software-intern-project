@@ -84,9 +84,12 @@ A production-grade CLI-based background job queue system with worker processes, 
 
    **If you are *not* using \`systemd\`**, or you prefer running it manually:
 
-   Run the daemon directly from a terminal:
+   Run the daemon directly in a terminal:
+   ```bash
+   node dist/src/daemon/daemon.js
+   ```
 
-
+   The daemon will start listening on the configured socket path.
 
 6. **Verify installation:**
    
@@ -97,6 +100,9 @@ A production-grade CLI-based background job queue system with worker processes, 
    
    # Enqueue a test job
    queuectl enqueue '{"id":"test1","command":"echo Hello"}'
+   
+   # Start a worker
+   queuectl worker start --count 1
    
    # Check status
    queuectl status
@@ -269,7 +275,7 @@ queuectl worker start --count 3
 
 **Output:**
 ```
-{"success":true,"message":"Started 3 worker"}
+{"success":true,"message":"Started 3 workers"}
 ```
 
 **Monitor status:**
@@ -349,7 +355,43 @@ queuectl metrics
 }
 ```
 
-## 🏗️ Architecture Overview
+## 📂 Project Structure
+
+The project is organized as follows:
+
+```
+QueueCTL/
+├── bin/
+│   └── queuectl.ts              # CLI entry point
+├── src/
+│   ├── cli/
+│   │   └── commands/
+│   │       ├── config.ts        # Configuration command
+│   │       ├── dlq.ts           # Dead Letter Queue commands
+│   │       ├── enqueue.ts       # Job enqueuing command
+│   │       ├── list.ts          # Job listing command
+│   │       ├── metrics.ts       # Metrics command
+│   │       ├── status.ts        # Status command
+│   │       └── worker.ts        # Worker management commands
+│   ├── daemon/
+│   │   ├── daemon.ts            # Main daemon process
+│   │   └── worker.ts            # Worker process logic
+│   ├── db/
+│   │   └── better-sqlite.ts     # Database layer & operations
+│   ├── lib/
+│   │   ├── cli.ts               # CLI-Daemon IPC client
+│   │   └── daemon.ts            # Daemon business logic
+│   └── type.ts                  # TypeScript interfaces
+├── tests/
+│   └── scenarios.test.ts        # Integration tests
+├── dist/                        # Compiled JavaScript (after build)
+├── package.json
+├── tsconfig.json
+├── vitest.config.ts
+└── README.md
+```
+
+---
 
 ### System Components
 
@@ -467,24 +509,35 @@ CREATE TABLE metrics (
 #### Worker Process Flow
 
 ```typescript
+let shutdownGracefully = false;
+
 while (!shutdownGracefully) {
   1. Poll database for available job
-  2. Lock job atomically (transaction)
-  3. Execute command
-  4. Update job state
-  5. If failed: calculate backoff, schedule retry
-  6. If max retries exceeded: move to DLQ
-  7. Continue polling
+  2. If no job available:
+     - Sleep 1 second
+     - Continue polling
+  3. Lock job atomically (transaction)
+  4. Execute command with timeout
+  5. Update job state (completed/failed/dead)
+  6. If failed: calculate backoff, schedule retry
+  7. If max retries exceeded: move to DLQ
+  8. Continue polling for next job
 }
+
+// On SIGTERM signal:
+shutdownGracefully = true;
+// Worker finishes current job, then exits
 ```
 
 #### Key Worker Features
 
-1. **Polling Loop**: Workers continuously poll database (1 second interval when no jobs)
-2. **Atomic Locking**: Uses SQLite transactions to prevent race conditions
-3. **Graceful Shutdown**: Handles SIGTERM, finishes current job before exit
-4. **Timeout Handling**: Commands timeout after configured duration
-5. **Error Handling**: Catches execution errors, updates job state accordingly
+1. **Continuous Polling Loop**: Workers continuously poll database for available jobs
+2. **Idle Handling**: Workers sleep 1 second when no jobs available (prevents CPU spinning)
+3. **Atomic Locking**: Uses SQLite transactions to prevent race conditions
+4. **Graceful Shutdown**: Handles SIGTERM signal, finishes current job before exit
+5. **Timeout Handling**: Commands timeout after configured duration (default: 5 seconds)
+6. **Error Handling**: Catches execution errors, updates job state accordingly
+7. **No Job Abandonment**: Worker never exits mid-job execution
 
 #### Concurrency Model
 
@@ -507,9 +560,10 @@ while (!shutdownGracefully) {
 
 ### IPC Communication
 
-- **Protocol**: Unix Domain Socket (IPC)
+- **Protocol**: Unix Domain Socket (IPC) on Linux/macOS; Named Pipes on Windows
 - **Format**: JSON messages
-- **Socket Path**: `/tmp/queuectl.sock` (configurable via `SOCKET_PATH`)
+- **Socket Path** (Linux/macOS): `/tmp/queuectl.sock` (configurable via `SOCKET_PATH`)
+- **Socket Path** (Windows): `\\.\pipe\queuectl` (configurable via `SOCKET_PATH`)
 - **Message Format**: `{ command, option, flag, value }`
 - **Response Format**: `{ success: boolean, message: any }`
 
@@ -616,11 +670,40 @@ while (!shutdownGracefully) {
 - ✅ Simple and fast
 - ✅ No need for persistent worker state
 - ✅ Workers are ephemeral (can restart)
+- ✅ Daemon can manage worker lifecycle cleanly
 
 **Trade-off:**
 - ❌ Worker state lost on daemon restart
 - ❌ No worker persistence across restarts
 - ❌ Cannot track worker history
+
+### 8. **Cross-Platform IPC (Sockets & Named Pipes)**
+
+**Decision:** Use Unix sockets on Linux/macOS; Windows named pipes on Windows
+
+**Rationale:**
+- ✅ Fast, local IPC without TCP overhead
+- ✅ Platform-native mechanisms
+- ✅ More secure (no network exposure)
+- ✅ No additional dependencies
+
+**Trade-off:**
+- ❌ Not suitable for remote access
+- ❌ Platform-specific socket management
+
+### 9. **Graceful Worker Shutdown**
+
+**Decision:** Workers finish current job before exiting on SIGTERM
+
+**Rationale:**
+- ✅ No job abandonment mid-execution
+- ✅ Ensures job consistency
+- ✅ Proper state transitions in database
+- ✅ Clean daemon lifecycle
+
+**Trade-off:**
+- ❌ Shutdown may take time if job is running
+- ❌ Requires SIGTERM handling in worker
 
 ### Simplifications Made
 
@@ -628,41 +711,72 @@ while (!shutdownGracefully) {
 2. **No Web UI**: CLI-only interface (no dashboard)
 3. **No Job Priorities Beyond 0/1**: Only normal (0) and high (1) priorities
 
-## 🧪 Testing Instructions
+## 🎯 Bonus Features
+
+Beyond the core requirements, QueueCTL includes several production-ready enhancements:
+
+### ✨ Implemented Features
+
+- **Priority Queue**: Jobs support priority levels (0=normal, 1=high)
+- **Scheduled Jobs**: Delay job execution with `run_after` timestamp
+- **Job Timeout**: Configurable per-job execution timeout
+- **Concurrent Workers**: Multiple worker processes process jobs in parallel
+- **Graceful Shutdown**: Workers finish current job before exiting on SIGTERM
+- **System Metrics**: Real-time daemon metrics (uptime, command count, runtimes)
+- **Configurable Retry Policies**: Customize max retries and backoff behavior
+- **Dead Letter Queue**: Failed jobs moved to DLQ after exhausting retries
+- **Database Persistence**: All job and configuration data survives daemon restarts
+- **Duplicate Prevention**: Transaction-based locking prevents job duplication
+- **Better Error Messages**: Validation with clear, actionable error text
+
+---
+
+## 🚫 Known Limitations
+
+- **Single-Machine Only**: No support for distributed workers across multiple machines
+- **No REST API**: CLI-based interface only (no HTTP endpoints)
+- **No Web Dashboard**: Command-line interface required for all operations
+- **No Authentication**: Assumes secure, trusted environment
+- **No Job Output Storage**: Command output is not persisted (only success/failure state)
+- **SQLite Scale Limits**: Not suitable for millions of jobs (single-node SQLite)
+- **No Built-in Monitoring**: External monitoring tool integration required
+
+---
 
 ### Running Tests
 
 ```bash
-# Run all tests
+# Run all tests (integration tests using Vitest)
 npm test
 
 # Run tests in watch mode
 npm run test:watch
 
-# Run tests with coverage
+# Run tests with coverage report
 npm run test:coverage
 ```
 
-### Video Demo
-
-[Watch the video demo](https://drive.google.com/file/d/1yjwKwIbD8O83d5m2XUY-BSwEJMYtf22r/view?usp=sharing)
-
 ### Test Scenarios
 
-The test suite covers all 5 required scenarios:
+The automated test suite (`tests/scenarios.test.ts`) covers the following scenarios:
 
-1. ✅ **Basic job completes successfully**
-2. ✅ **Failed job retries with backoff and moves to DLQ**
-3. ✅ **Multiple workers process jobs without overlap**
-4. ✅ **Invalid commands fail gracefully**
-5. ✅ **Job data survives restart**
+1. ✅ **Basic Job Completion**: Simple echo command enqueues, worker processes, job completes
+2. ✅ **Priority Queue**: Normal and high priority jobs are distinguished
+3. ✅ **Retry with Backoff**: Failed jobs retry with exponential backoff, move to DLQ
+4. ✅ **Multiple Workers**: Concurrent workers process jobs without duplication
+5. ✅ **Invalid Input Handling**: Invalid commands and payloads are rejected gracefully
+6. ✅ **Persistence**: Job data survives daemon restart
+7. ✅ **Concurrent Processing**: Multiple jobs processed in parallel by worker pool
+8. ✅ **Duplicate Prevention**: Transaction-based locking prevents job duplication
 
 ### Test Structure
 
+- **Framework**: Vitest (fast unit & integration test runner)
 - **Location**: `tests/scenarios.test.ts`
-- **Type**: Integration tests
+- **Type**: End-to-end integration tests
 - **Verification**: Direct database queries (not just CLI output)
-- **Isolation**: Each test run uses a fresh database
+- **Isolation**: Each test run uses a fresh, isolated database
+- **Coverage**: Covers all major CLI commands and job lifecycle states
 
 ### How to Verify Functionality
 
@@ -690,16 +804,12 @@ The test suite covers all 5 required scenarios:
 
 **Expected Output:**
 ```
-✓ tests/scenarios.test.ts (5)
-  ✓ QueueCTL Test Scenarios (5)
-    ✓ 1. Basic job completes successfully
-    ✓ 2. Failed job retries with backoff and moves to DLQ
-    ✓ 3. Multiple workers process jobs without overlap
-    ✓ 4. Invalid commands fail gracefully
-    ✓ 5. Job data survives restart
+ RUN  v4.1.10 D:/QueueCTL
 
  Test Files  1 passed (1)
-      Tests  5 passed (5)
+      Tests  6 passed (6)
+   Start at  16:33:43
+   Duration  29.27s (transform 164ms, setup 0ms, import 281ms, tests 28.09s, environment 0ms)
 ```
 
 #### Manual Verification
@@ -751,6 +861,46 @@ The test suite covers all 5 required scenarios:
    
    # Verify job still exists
    queuectl list --state pending
+   ```
+
+5. **Test worker stop robustness:**
+   ```bash
+   # Start worker
+   queuectl worker start --count 2
+   
+   # Check status
+   queuectl status
+   
+   # Stop workers
+   queuectl worker stop
+   
+   # Try stopping again (should gracefully handle no active workers)
+   queuectl worker stop
+   ```
+
+6. **Stress test (multiple jobs and workers):**
+   ```bash
+   # Enqueue 50 test jobs
+   for i in {1..50}; do
+     queuectl enqueue "{\"id\":\"stress-$i\",\"command\":\"echo task-$i\"}"
+   done
+   
+   # Start 8 concurrent workers
+   queuectl worker start --count 8
+   
+   # Monitor progress
+   sleep 2
+   queuectl status
+   
+   # Wait for completion
+   sleep 5
+   queuectl status
+   
+   # Verify all jobs completed
+   queuectl list --state completed
+   
+   # Cleanup
+   queuectl worker stop
    ```
 
 ### Test Coverage
@@ -858,7 +1008,29 @@ Manage system configuration.
 queuectl config set <key> <value>
 ```
 
-**Keys:** `max-retries`, `delay-base`, `backoff`, `timeout`
+**Supported Configuration Keys:**
+
+| Key | Type | Valid Values | Example | Description |
+|-----|------|--------------|---------|-------------|
+| `max-retries` | Number | Positive integers | `5` | Max times to retry failed jobs |
+| `delay-base` | Number | Positive integers (ms) | `5000` | Base delay for backoff (milliseconds) |
+| `timeout` | Number | Positive integers (ms) | `10000` | Job execution timeout (milliseconds) |
+| `backoff` | String | `exponential`, `fixed` | `exponential` | Retry backoff strategy |
+
+**Examples:**
+```bash
+# Set max retries to 5
+queuectl config set max-retries 5
+
+# Set base delay to 2 seconds (2000 ms)
+queuectl config set delay-base 2000
+
+# Set job timeout to 10 seconds
+queuectl config set timeout 10000
+
+# Use fixed backoff strategy
+queuectl config set backoff fixed
+```
 
 ---
 
@@ -892,33 +1064,82 @@ pending → processing → completed ✅
        dead (after max retries) → pending (if retried from DLQ)
 ```
 
-### Exponential Backoff
+### Backoff Strategies
 
-When a job fails, it's scheduled for retry with exponential backoff:
+When a job fails, it's scheduled for retry using one of two strategies:
 
+**Exponential Backoff (default):**
 ```
 delay = (delay_base / 1000) ^ attempts seconds
 ```
 
-**Example:**
+Each retry waits increasingly longer:
 - `delay_base = 5000` (5 seconds)
-- Attempt 1: `(5/1)^1 = 5` seconds
-- Attempt 2: `(5/1)^2 = 25` seconds
-- Attempt 3: `(5/1)^3 = 125` seconds
+- Attempt 1: `5^1 = 5` seconds
+- Attempt 2: `5^2 = 25` seconds
+- Attempt 3: `5^3 = 125` seconds
+
+**Fixed Backoff:**
+```
+delay = delay_base / 1000 seconds (constant)
+```
+
+Each retry waits the same duration:
+- `delay_base = 5000` (5 seconds)
+- Attempt 1: 5 seconds
+- Attempt 2: 5 seconds
+- Attempt 3: 5 seconds
+
+To switch backoff strategies:
+```bash
+queuectl config set backoff fixed      # Use fixed delays
+queuectl config set backoff exponential # Use exponential delays (default)
+```
 
 ## ⚙️ Configuration
 
 ### Default Configuration
 
-- **max-retries**: `3`
-- **delay-base**: `5000` ms (5 seconds)
-- **backoff**: `exponential`
-- **timeout**: `5000` ms (5 seconds)
+- **max-retries**: `3` (number of times to retry a failed job)
+- **delay-base**: `5000` ms (5 seconds, base for exponential backoff)
+- **backoff**: `exponential` (retry delay strategy)
+- **timeout**: `5000` ms (5 seconds, timeout for job execution)
+
+### Configuration Command
+
+```bash
+queuectl config set <key> <value>
+```
+
+**Supported Keys & Values:**
+
+| Key | Type | Valid Values | Default |
+|-----|------|--------------|---------|
+| `max-retries` | Number | Positive integers | 3 |
+| `delay-base` | Number | Positive integers (ms) | 5000 |
+| `timeout` | Number | Positive integers (ms) | 5000 |
+| `backoff` | String | `exponential`, `fixed` | `exponential` |
+
+### Backoff Strategies
+
+**Exponential Backoff:**
+```
+delay = (delay_base / 1000) ^ attempts (seconds)
+```
+- Attempt 1: `5^1 = 5` seconds
+- Attempt 2: `5^2 = 25` seconds
+- Attempt 3: `5^3 = 125` seconds
+
+**Fixed Backoff:**
+```
+delay = delay_base / 1000 (seconds for each attempt)
+```
+- Always: `delay_base` milliseconds between retries
 
 ### Environment Variables
 
 - `DB_PATH`: Path to SQLite database file (default: `./queuectl.db`)
-- `SOCKET_PATH`: Path to Unix socket for IPC (default: `/tmp/queuectl.sock`)
+- `SOCKET_PATH`: Path to Unix socket for IPC (default: `/tmp/queuectl.sock` on Unix; `\\.\pipe\queuectl` on Windows)
 
 ---
 
