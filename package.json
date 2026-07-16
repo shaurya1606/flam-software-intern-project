@@ -4,10 +4,12 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "build": "tsc",
+    "start": "node dist/src/daemon/daemon.js",
+    "cli": "node dist/bin/queuectl.js",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "build": "tsc"
+    "test:coverage": "vitest run --coverage"
   },
   "bin": {
     "queuectl": "./dist/bin/queuectl.js"
