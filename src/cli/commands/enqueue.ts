@@ -27,15 +27,12 @@ $ queuectl enqueue '{"id":"job4","command":"node script.js","run_after":"2025-11
 `
 		)
 		.action(async (jobJson) => {
-    console.log(jobJson);
-
-    const commObj = {
-        command: "enqueue",
-        option: null,
-        flag: null,
-        value: jobJson
-    };
-
-    IPCConnectionWDaemon(commObj);
-});
+			const commObj: CommObj = {
+				command: "enqueue",
+				option: null,
+				flag: null,
+				value: jobJson
+			};
+			IPCConnectionWDaemon(commObj);
+		});
 };
