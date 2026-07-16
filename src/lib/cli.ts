@@ -4,7 +4,7 @@ import path from "path";
 import { CommObj, IPCObj } from "../type.js";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config()
 
 function getSocketPath(): string {
 	if (process.env.SOCKET_PATH) return process.env.SOCKET_PATH;
