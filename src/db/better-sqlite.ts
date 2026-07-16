@@ -140,8 +140,6 @@ export function pollAndLock(): JobObj | null {
 		return jobObj || null;
 	} catch (err) {
 		rollback.run();
-		
-		console.error('pollAndLock failed:', err);
 		return null;
 	}
 }
