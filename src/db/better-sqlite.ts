@@ -13,6 +13,9 @@ export function initDB() {
 			id TEXT PRIMARY KEY,
 			command TEXT NOT NULL,
 			state TEXT DEFAULT 'pending',
+			stdout TEXT,
+			stderr TEXT,
+			exit_code INTEGER,
 			attempts INT DEFAULT 0,
 			max_retries INT DEFAULT 3,
 			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -24,6 +27,17 @@ export function initDB() {
 			started_at DATETIME
 		)
 	`).run();
+
+	// In case the DB already existed without the new columns, attempt to add them.
+	try {
+		db.prepare(`ALTER TABLE jobs ADD COLUMN stdout TEXT`).run();
+	} catch (e) {}
+	try {
+		db.prepare(`ALTER TABLE jobs ADD COLUMN stderr TEXT`).run();
+	} catch (e) {}
+	try {
+		db.prepare(`ALTER TABLE jobs ADD COLUMN exit_code INTEGER`).run();
+	} catch (e) {}
 
 	db.prepare(`
 		CREATE TABLE IF NOT EXISTS config (
@@ -67,12 +81,15 @@ export function incrementCommandMetrics() {
 
 export function addJobPersistent(jobObj: JobObj) {
 	const insert = db.prepare(`
-		INSERT INTO jobs (id, command, state, attempts, max_retries, created_at, updated_at, locked_at, timeout, run_after, priority)
-		VALUES (@id, @command, @state, @attempts, @max_retries, @created_at, @updated_at, @locked_at, @timeout, @run_after, @priority)
+		INSERT INTO jobs (id, command, state, stdout, stderr, exit_code, attempts, max_retries, created_at, updated_at, locked_at, timeout, run_after, priority)
+		VALUES (@id, @command, @state, @stdout, @stderr, @exit_code, @attempts, @max_retries, @created_at, @updated_at, @locked_at, @timeout, @run_after, @priority)
 	`).run({
 		id: jobObj.id,
 		command: jobObj.command,
 		state: jobObj.state,
+		stdout: (jobObj as any).stdout ?? null,
+		stderr: (jobObj as any).stderr ?? null,
+		exit_code: (jobObj as any).exit_code ?? null,
 		attempts: jobObj.attempts,
 		max_retries: jobObj.max_retries,
 		created_at: jobObj.created_at,
@@ -160,6 +177,9 @@ export function updateJobPersistent(jobObj: JobObj) {
 		SET attempts = COALESCE(?, attempts),
 			max_retries = COALESCE(?, max_retries),
 			state = COALESCE(?, state),
+			stdout = COALESCE(?, stdout),
+			stderr = COALESCE(?, stderr),
+			exit_code = COALESCE(?, exit_code),
 			updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now', 'utc'),
 			locked_at = ?,
 			timeout = COALESCE(?, timeout),
@@ -171,6 +191,9 @@ export function updateJobPersistent(jobObj: JobObj) {
 		jobObj.attempts,
 		jobObj.max_retries,
 		jobObj.state, 
+		(jobObj as any).stdout ?? null,
+		(jobObj as any).stderr ?? null,
+		(jobObj as any).exit_code ?? null,
 		jobObj.locked_at ?? null,
 		jobObj.timeout, 
 		jobObj.run_after, 
@@ -279,4 +302,14 @@ export function maxRunTime(): number {
             AND updated_at IS NOT NULL
     `).get() as { max_rt: number | null };
     return r.max_rt ?? 0;
+}
+
+export function retryCount(): number {
+	const r = db.prepare(`SELECT SUM(CASE WHEN attempts > 1 THEN 1 ELSE 0 END) AS c FROM jobs`).get() as { c: number | null };
+	return r.c ?? 0;
+}
+
+export function deadJobsCount(): number {
+	const r = db.prepare(`SELECT COUNT(*) AS c FROM jobs WHERE state = 'dead'`).get() as { c: number };
+	return r.c;
 }

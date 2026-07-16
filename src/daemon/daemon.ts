@@ -3,7 +3,7 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 import { CommObj } from "../type.js";
-import { enqueue, worker, status, list, dlq, config, metrics } from "../lib/daemon.js"
+import { enqueue, worker, status, list, dlq, config, metrics, shutdownWorkers } from "../lib/daemon.js"
 import { initDB, initMetrics, incrementCommandMetrics } from "../db/better-sqlite.js";
 
 function getSocketPath(): string {
@@ -70,12 +70,45 @@ const daemon = net.createServer((conn) => {
 	});
 });
 
+let isShuttingDown = false;
+
+async function gracefulShutdown() {
+	if (isShuttingDown) return;
+	isShuttingDown = true;
+	console.log("Shutting down daemon...");
+
+	// Stop worker processes before closing server
+	await shutdownWorkers();
+
+	// Stop accepting new connections
+	daemon.close();
+
+	// Close socket file on non-Windows
+	if (process.platform !== "win32") {
+		try {
+			if (fs.existsSync(SOCKET_PATH)) {
+				fs.unlinkSync(SOCKET_PATH);
+			}
+		} catch {}
+	}
+
+	// Exit after a brief delay to allow cleanup
+	setTimeout(() => {
+		process.exit(0);
+	}, 1000);
+}
+
+process.on("SIGINT", gracefulShutdown);
+process.on("SIGTERM", gracefulShutdown);
+
 daemon.listen(SOCKET_PATH, () => {
 	initDB();
 	initMetrics();
 
 	console.log("Daemon is listening on ", SOCKET_PATH);
-});	daemon.on("error", (err) => {
+});
+
+daemon.on("error", (err) => {
 	console.error("Daemon error:", err);
 	process.exitCode = 1;
 });

@@ -26,7 +26,7 @@ workerLoop();
 	
 async function processJob(jobObj: JobObj) {
 	try {
-		const { stdout } = await execPromise(jobObj.command, {
+		const { stdout, stderr } = await execPromise(jobObj.command, {
 			timeout: jobObj.timeout || 5000,
 			killSignal: "SIGKILL"
 		});
@@ -34,11 +34,35 @@ async function processJob(jobObj: JobObj) {
 		jobObj.attempts += 1;
 		jobObj.state = "completed";
 		jobObj.locked_at = undefined;
+		jobObj.stdout = typeof stdout === 'string' ? stdout.trim() : '';
+		jobObj.stderr = typeof stderr === 'string' ? stderr.trim() : '';
+		jobObj.exit_code = 0;
 
 		updateJobPersistent(jobObj);
 
 	} catch (err) {
 		jobObj.attempts += 1;
+
+		// capture error output if available
+		if (err && typeof err === 'object' && 'stderr' in err) {
+			try {
+				// @ts-ignore
+				jobObj.stderr = String((err as any).stderr).trim();
+			} catch {}
+		}
+		if (err && typeof err === 'object' && 'stdout' in err) {
+			try {
+				// @ts-ignore
+				jobObj.stdout = String((err as any).stdout).trim();
+			} catch {}
+		}
+		// exit code if present
+		if (err && typeof err === 'object' && 'code' in err) {
+			// @ts-ignore
+			jobObj.exit_code = Number((err as any).code) || 1;
+		} else {
+			jobObj.exit_code = 1;
+		}
 
 		const maxAttempts = jobObj.max_retries || 0;
 		if (jobObj.attempts >= maxAttempts) {

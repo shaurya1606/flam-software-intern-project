@@ -20,6 +20,9 @@ export interface JobObj {
 	run_after: string;
 	priority: number;
 	started_at: string | null;
+	stdout?: string | null;
+	stderr?: string | null;
+	exit_code?: number | null;
 };
 
 export interface IPCObj {
@@ -34,4 +37,9 @@ export interface MetricsResult {
   total_commands: number;
   average_runtime: number;
   max_runtime: number;
+  retry_count: number;
+  dead_jobs: number;
+  workers_running: number;
+  success_rate: string;
+  failure_rate: string;
 }

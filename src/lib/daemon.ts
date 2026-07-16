@@ -18,6 +18,7 @@ import {
 	avgRunTime,
 	maxRunTime
 } from "../db/better-sqlite.js";
+import { retryCount, deadJobsCount } from "../db/better-sqlite.js";
 
 // Worker state is process-local and stored in memory only.
 // Worker process references are intentionally reset if the daemon restarts.
@@ -199,6 +200,27 @@ export async function list(commObj: CommObj) {
 	}
 }
 
+export async function shutdownWorkers() {
+	const stopPromises: Promise<void>[] = [];
+	for (const [pid, proc] of workers) {
+		stopPromises.push(new Promise((resolve) => {
+			if (proc.exitCode !== null) {
+				workers.delete(pid);
+				resolve();
+				return;
+			}
+
+			proc.once("exit", () => {
+				workers.delete(pid);
+				resolve();
+			});
+			proc.kill("SIGTERM");
+		}));
+	}
+
+	await Promise.allSettled(stopPromises);
+}
+
 async function getJobFromJobId(queue: any, jobId: string): Promise<any> {
 	try {
 		const jobs = await queue.getJobs(['completed', 'failed', 'waiting', 'active']);
@@ -292,13 +314,27 @@ export function config(commObj: CommObj) {
 
 export function metrics() {
 	try {
-		const result: MetricsResult = {
-			total_jobs: totalJobsCount(),
-			completed_jobs: completedJobsCount(),
+		const total = totalJobsCount();
+		const completed = completedJobsCount();
+		const dead = deadJobsCount();
+		const retry_count = retryCount();
+		const workers_running = workers.size;
+
+		const success_rate = total === 0 ? '0%' : `${((completed / total) * 100).toFixed(2)}%`;
+		const failure_rate = total === 0 ? '0%' : `${((dead / total) * 100).toFixed(2)}%`;
+
+		const result: MetricsResult & any = {
+			total_jobs: total,
+			completed_jobs: completed,
 			uptime: String(upTime()) + " min",
 			total_commands: totalCommands(),
 			average_runtime: avgRunTime(),
-			max_runtime: maxRunTime()
+			max_runtime: maxRunTime(),
+			retry_count,
+			dead_jobs: dead,
+			workers_running,
+			success_rate,
+			failure_rate
 		};
 
 		return { success: true, message: result };
