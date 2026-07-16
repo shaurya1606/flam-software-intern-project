@@ -83,7 +83,7 @@ export async function enqueue(commObj: CommObj) {
 		
 		addJobPersistent(jobObj);
 
-		return { success: true, message: "Job enqueued" };
+		return { success: true, message: `Job '${jobObj.id}' enqueued.` };
 	} catch (err) {
 		if (err instanceof Error) {
 			throw new Error(`Error enqueuing: ${err.message}`);
@@ -97,15 +97,19 @@ export async function worker(commObj: CommObj) {
 	try {
 		let message = '';
 		if (commObj.option === "start") {
-			if (!commObj.value || isNaN(Number(commObj.value))) return;
+			if (!commObj.value) throw new Error("Worker count is required");
+			const countValue = Number(commObj.value);
+			if (!Number.isInteger(countValue) || countValue <= 0 || countValue > 128) {
+				throw new Error("Worker count must be a positive integer between 1 and 128");
+			}
 			
-			const count = Number(commObj.value);
+			const count = countValue;
 			for (let i = 0; i < count; i++) {
 				const child = fork(workerScriptPath);
 				workers.set(child.pid!, child);
 			}
 			
-			message = `Started ${count} worker${count === 1 ? '' : 's'}`;
+			message = `Started ${count} worker${count === 1 ? '' : 's'}.`;
 		} else {
 			if (workers.size === 0) {
 				message = 'No active workers';
@@ -280,7 +284,17 @@ export async function dlq(commObj: CommObj) {
 
 export function config(commObj: CommObj) {
 	try {
-		const { flag, value } = commObj;
+		const { option, flag, value } = commObj;
+		if (option === "show" || option === "get") {
+			const result = {
+				max_retries: Number(getConfig("max-retries") ?? 3),
+				backoff_base: Number(getConfig("delay-base") ?? 5000),
+				strategy: String(getConfig("backoff") ?? "exponential"),
+				timeout: Number(getConfig("timeout") ?? 5000)
+			};
+			return { success: true, message: result };
+		}
+
 		if (!flag || !value) throw new Error("Invalid key or value");
 
 		// Validate numeric keys

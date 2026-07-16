@@ -5,7 +5,7 @@ import { IPCConnectionWDaemon } from "../../lib/cli.js";
 export default function registerStatus(program: Command) {
 	program
 		.command("status")
-		.description("Show summary of all job states & active workers")
+		.description("Show queue status and worker counts")
 		.usage("")
 		.addHelpText(
 			"after",

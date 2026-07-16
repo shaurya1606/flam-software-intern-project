@@ -5,7 +5,7 @@ import { IPCConnectionWDaemon } from "../../lib/cli.js";
 export default function registerList(program: Command) {
 	program
 		.command("list")
-		.description("List jobs by state")
+		.description("List jobs for a specific state")
 		.option("--state <state>", "Filter by job state (pending, running, done, failed)")
 		.usage("--state pending")
 		.addHelpText(

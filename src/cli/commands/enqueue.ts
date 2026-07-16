@@ -6,7 +6,7 @@ export default function (program: Command) {
 	program
 		.command("enqueue")
 		.argument("<jobJson>", "Job JSON, e.g. {\"id\":\"job1\",\"command\":\"sleep 2\"}")
-		.description("Enqueue a job to execute it")
+		.description("Enqueue a job for later execution")
 		.usage(`'{"id":"job1","command":"sleep 2"}'`)
 		.addHelpText(
 		"after",

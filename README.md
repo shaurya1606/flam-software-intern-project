@@ -356,6 +356,22 @@ queuectl list --state pending
 
 ### Example 6: Metrics
 
+> `Retries` refers to the number of jobs that required at least one retry. The value is reported consistently in the metrics view.
+
+### Configuration
+
+Use `queuectl config show` to inspect current configuration values:
+
+```bash
+queuectl config show
+```
+
+If there are no jobs in a given state, `queuectl list --state <state>` prints a friendly message such as `No pending jobs found.` instead of returning an empty response.
+
+Worker counts must be positive integers between `1` and `128`.
+
+> `Retries` refers to the number of jobs that required at least one retry. The value is reported consistently in the metrics view.
+
 **View system metrics:**
 ```bash
 queuectl metrics

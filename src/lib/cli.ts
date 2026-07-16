@@ -27,8 +27,8 @@ function formatValue(value: unknown, missing = "N/A", empty = "(empty)"): string
 	return String(value);
 }
 
-function formatCount(value: unknown): string {
-	if (value === undefined || value === null) return "N/A";
+function formatCount(value: unknown, fallback: string | number = 0): string {
+	if (value === undefined || value === null) return String(fallback);
 	return String(value);
 }
 
@@ -40,6 +40,22 @@ function formatUptime(uptime: unknown): string {
 	const hours = Math.floor(minutes / 60);
 	const mins = minutes % 60;
 	return `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}:00`;
+}
+
+function printConfig(config: unknown) {
+	if (typeof config !== "object" || config === null) {
+		console.log(JSON.stringify(config, null, 2));
+		return;
+	}
+
+	const data = config as Record<string, any>;
+	console.log("Current Configuration");
+	console.log("---------------------");
+	console.log("");
+	console.log(`Max Retries : ${formatCount(data.max_retries, 3)}`);
+	console.log(`Backoff Base: ${formatCount(data.backoff_base, 5000)}`);
+	console.log(`Strategy    : ${formatValue(data.strategy ?? "exponential")}`);
+	console.log(`Timeout     : ${formatCount(data.timeout, 5000)}`);
 }
 
 function printStatus(status: unknown) {
@@ -54,13 +70,13 @@ function printStatus(status: unknown) {
 	console.log("Queue Status");
 	console.log("============");
 	console.log("");
-	console.log(`Pending      : ${formatCount(jobs.pending ?? "N/A")}`);
-	console.log(`Processing   : ${formatCount(jobs.processing ?? "N/A")}`);
-	console.log(`Completed    : ${formatCount(jobs.completed ?? "N/A")}`);
-	console.log(`Failed       : ${formatCount(jobs.failed ?? "N/A")}`);
-	console.log(`Dead         : ${formatCount(jobs.dead ?? "N/A")}`);
+	console.log(`Pending      : ${formatCount(jobs.pending, 0)}`);
+	console.log(`Processing   : ${formatCount(jobs.processing, 0)}`);
+	console.log(`Completed    : ${formatCount(jobs.completed, 0)}`);
+	console.log(`Failed       : ${formatCount(jobs.failed, 0)}`);
+	console.log(`Dead         : ${formatCount(jobs.dead, 0)}`);
 	console.log("");
-	console.log(`Workers      : ${formatCount(data.workers ?? "N/A")}`);
+	console.log(`Workers      : ${formatCount(data.workers, 0)}`);
 }
 
 function printMetrics(metrics: unknown) {
@@ -76,16 +92,16 @@ function printMetrics(metrics: unknown) {
 	console.log("");
 	console.log("Queue Statistics");
 	console.log("----------------");
-	console.log(`Total Jobs    : ${formatCount(data.total_jobs ?? "N/A")}`);
-	console.log(`Pending       : ${formatCount(data.pending ?? "N/A")}`);
-	console.log(`Processing    : ${formatCount(data.processing ?? "N/A")}`);
-	console.log(`Completed     : ${formatCount(data.completed_jobs ?? "N/A")}`);
-	console.log(`Failed        : ${formatCount(data.failed ?? "N/A")}`);
-	console.log(`Dead          : ${formatCount(data.dead_jobs ?? "N/A")}`);
+	console.log(`Total Jobs    : ${formatCount(data.total_jobs, 0)}`);
+	console.log(`Pending       : ${formatCount(data.pending, 0)}`);
+	console.log(`Processing    : ${formatCount(data.processing, 0)}`);
+	console.log(`Completed     : ${formatCount(data.completed_jobs, 0)}`);
+	console.log(`Failed        : ${formatCount(data.failed, 0)}`);
+	console.log(`Dead          : ${formatCount(data.dead_jobs, 0)}`);
 	console.log("");
 	console.log("Workers");
 	console.log("-------");
-	console.log(`Running       : ${formatCount(data.workers_running ?? "N/A")}`);
+	console.log(`Running       : ${formatCount(data.workers_running, 0)}`);
 	console.log("");
 	console.log("Performance");
 	console.log("-----------");
@@ -101,9 +117,15 @@ function printMetrics(metrics: unknown) {
 	console.log(`Max Runtime   : ${formatCount(data.max_runtime ?? "N/A")}`);
 }
 
-function printJobs(jobs: unknown) {
+function printJobs(jobs: unknown, stateLabel?: string) {
 	if (!Array.isArray(jobs)) {
 		console.log(JSON.stringify(jobs, null, 2));
+		return;
+	}
+
+	if (jobs.length === 0) {
+		const label = stateLabel ? stateLabel : "jobs";
+		console.log(`No ${label} jobs found.`);
 		return;
 	}
 
@@ -166,12 +188,16 @@ export function IPCConnectionWDaemon(commObj: CommObj) {
 	client.on("data", (data) => {
 		const res: IPCObj = JSON.parse(data.toString());
 		if (res.success) {
-			if (commObj.command === "list" || commObj.command === "dlq") {
-				printJobs(res.message);
+			if (commObj.command === "list") {
+				printJobs(res.message, commObj.value ?? undefined);
+			} else if (commObj.command === "dlq") {
+				printJobs(res.message, "dead");
 			} else if (commObj.command === "status") {
 				printStatus(res.message);
 			} else if (commObj.command === "metrics") {
 				printMetrics(res.message);
+			} else if (commObj.command === "config" && (commObj.option === "show" || commObj.option === "get")) {
+				printConfig(res.message);
 			} else {
 				printSuccessMessage(res.message);
 			}

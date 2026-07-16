@@ -5,7 +5,7 @@ import { IPCConnectionWDaemon } from "../../lib/cli.js";
 export default function registerMetrics(program: Command) {
 	program
 		.command("metrics")
-		.description("Show daemon metrics & aggregated stats")
+		.description("Show daemon metrics and runtime statistics")
 		.usage("")
 		.addHelpText(
 			"after",

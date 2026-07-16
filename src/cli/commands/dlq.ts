@@ -5,7 +5,7 @@ import { IPCConnectionWDaemon } from "../../lib/cli.js";
 export default function registerDlq(program: Command) {
 	const dlq = program
 	.command("dlq")
-	.description("View or retry DLQ jobs")
+	.description("View or retry dead-letter queue jobs")
 	.usage("<command>")
 	.addHelpText(
 		"after",
