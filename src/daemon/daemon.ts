@@ -27,14 +27,11 @@ if (process.platform !== "win32") {
 }
 
 const daemon = net.createServer((conn) => {
-	console.log();
-
 	incrementCommandMetrics();
 
 	conn.on("data", async (data) => {
 		try {
 			const commObj: CommObj = JSON.parse(data.toString());
-			console.log("Received data:", commObj);
 
 			let result: unknown;
 
