@@ -12,13 +12,17 @@ export default function registerList(program: Command) {
 			"after",
 			`\nExample:\n  $ queuectl list --state pending\n`
 		)
-		.action(async (opts: { state: string }) => {
+		.action(async (opts: { state?: string }) => {
 			const state = opts.state;
+			if (!state) {
+				console.error("Error: --state is required.\n\nExample:\n  $ queuectl list --state pending");
+				process.exit(1);
+			}
 			const commObj: CommObj = {
 				command: "list",
 				option: null,
 				flag: "--state",
-				value: state.toString()
+				value: state
 			};
 			IPCConnectionWDaemon(commObj);
 		});
