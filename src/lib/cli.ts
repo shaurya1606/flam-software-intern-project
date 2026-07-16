@@ -34,7 +34,7 @@ export function IPCConnectionWDaemon(commObj: CommObj) {
 				console.log(res.message);
 			}
 		} else {
-			console.error(res.message);
+			console.error(res?.message ?? "Error performing action");
 		}
 		client.end();
 	});
