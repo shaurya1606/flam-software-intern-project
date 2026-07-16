@@ -82,8 +82,6 @@ export async function enqueue(commObj: CommObj) {
 		
 		addJobPersistent(jobObj);
 
-		console.log(`id: ${jobObj.id}`);
-		console.log(`command: ${jobObj.command}`);
 		return { success: true, message: "Job enqueued" };
 	} catch (err) {
 		if (err instanceof Error) {
@@ -108,27 +106,29 @@ export async function worker(commObj: CommObj) {
 			
 			message = `Started ${count} worker${count === 1 ? '' : 's'}`;
 		} else {
-			const stopPromises: Promise<void>[] = [];
-			for (const [pid, proc] of workers) {
-				stopPromises.push(new Promise((resolve) => {
-					if (proc.exitCode !== null) {
-						workers.delete(pid);
-						console.log(`Worker ${pid} stopped`);
-						resolve();
-						return;
-					}
+			if (workers.size === 0) {
+				message = 'No active workers';
+			} else {
+				const stopPromises: Promise<void>[] = [];
+				for (const [pid, proc] of workers) {
+					stopPromises.push(new Promise((resolve) => {
+						if (proc.exitCode !== null) {
+							workers.delete(pid);
+							resolve();
+							return;
+						}
 
-					proc.once("exit", () => {
-						workers.delete(pid);
-						console.log(`Worker ${pid} stopped`);
-						resolve();
-					});
-					proc.kill("SIGTERM");
-				}));
+						proc.once("exit", () => {
+							workers.delete(pid);
+							resolve();
+						});
+						proc.kill("SIGTERM");
+					}));
+				}
+
+				await Promise.allSettled(stopPromises);
+				message = 'Stopped workers';
 			}
-
-			await Promise.allSettled(stopPromises);
-			message = 'Stopped workers';
 		}
 		return { success: true, message };
 	} catch (err) {
