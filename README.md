@@ -1,7 +1,7 @@
 ﻿# QueueCTL
 
 <p align="center">
-  <img src="docs/assets/banner.svg" width="900">
+  <img src="docs/assets/banner.svg" width="100">
 </p>
 
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933)](https://nodejs.org/)
@@ -39,19 +39,20 @@ The hosted dashboard allows you to inspect the running queue without setting up 
 <p align="center">
   <img src="docs/assets/dashboard2.png" width="32%">
   <img src="docs/assets/dashboard3.png" width="32%">
-  <img src="docs/assets/dashboard4.png" width="32%">
 </p>
+
+  <img src="docs/assets/dashboard4.png" width="32%">
 
 ## CLI Demo
 
 <p align="center">
-  <img src="docs/assets/cli1.png" width="48%">
-  <img src="docs/assets/cli2.png" width="48%">
+  <img src="docs/assets/cli1.png" width="50%">
+  <img src="docs/assets/cli2.png" width="50%">
 </p>
 
 <p align="center">
-  <img src="docs/assets/cli3.png" width="48%">
-  <img src="docs/assets/cli4.png" width="48%">
+  <img src="docs/assets/cli3.png" width="50%">
+  <img src="docs/assets/cli4.png" width="50%">
 </p>
 
 ## Features
