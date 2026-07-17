@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <rect width="1200" height="720" fill="#f8fafc"/>
+  <rect x="40" y="40" width="1120" height="640" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+  <rect x="80" y="90" width="260" height="520" fill="#0f172a" rx="18"/>
+  <rect x="370" y="110" width="720" height="140" rx="16" fill="#f1f5f9"/>
+  <rect x="370" y="290" width="340" height="180" rx="16" fill="#e2e8f0"/>
+  <rect x="740" y="290" width="350" height="180" rx="16" fill="#e2e8f0"/>
+  <text x="110" y="150" fill="#f8fafc" font-size="26" font-family="Segoe UI, Arial, sans-serif">Status</text>
+  <text x="110" y="190" fill="#cbd5e1" font-size="22" font-family="Segoe UI, Arial, sans-serif">Jobs</text>
+  <text x="110" y="230" fill="#cbd5e1" font-size="22" font-family="Segoe UI, Arial, sans-serif">Metrics</text>
+  <text x="420" y="160" fill="#0f172a" font-size="28" font-family="Segoe UI, Arial, sans-serif">QueueCTL Dashboard Preview</text>
+  <text x="410" y="340" fill="#0f172a" font-size="22" font-family="Segoe UI, Arial, sans-serif">Pending: 2</text>
+  <text x="780" y="340" fill="#0f172a" font-size="22" font-family="Segoe UI, Arial, sans-serif">Completed: 18</text>
+</svg>

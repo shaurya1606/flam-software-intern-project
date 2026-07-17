@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="420" viewBox="0 0 1400 420">
+  <rect width="1400" height="420" fill="#0f172a"/>
+  <rect x="40" y="40" width="1320" height="340" rx="24" fill="#111827" stroke="#38bdf8" stroke-width="3"/>
+  <circle cx="182" cy="208" r="78" fill="#38bdf8" opacity="0.2"/>
+  <circle cx="1120" cy="160" r="94" fill="#8b5cf6" opacity="0.2"/>
+  <text x="110" y="190" fill="#f8fafc" font-size="54" font-family="Segoe UI, Arial, sans-serif" font-weight="700">QueueCTL</text>
+  <text x="110" y="240" fill="#cbd5e1" font-size="28" font-family="Segoe UI, Arial, sans-serif">Local-first background job queue for Node.js and TypeScript</text>
+  <text x="110" y="292" fill="#38bdf8" font-size="22" font-family="Segoe UI, Arial, sans-serif">SQLite • IPC • Worker processes • Dashboard</text>
+</svg>
