@@ -32,6 +32,11 @@ QueueCTL was built to make background work visible and inspectable without depen
 
 👉 **https://flam-software-intern-project-production.up.railway.app**
 
+
+or
+
+[Open Live Dashboard](https://flam-software-intern-project-production.up.railway.app)
+
 The hosted dashboard allows you to inspect the running queue without setting up the project locally.
 
 ## Dashboard Preview
@@ -82,6 +87,7 @@ The hosted dashboard allows you to inspect the running queue without setting up 
 | Dashboard | Express.js |
 | Testing | Vitest |
 | IPC | Unix Socket / Windows Named Pipe |
+| Frontend | Html, Css, Javascript |
 
 ## Architecture overview
 
@@ -152,7 +158,7 @@ tests/                    integration scenarios against a real daemon
 ### 1. Install dependencies
 
 ```bash
-git clone <repository-url>
+git clone [<repository-url>](https://github.com/shaurya1606/flam-software-intern-project.git)
 cd QueueCTL
 npm install
 npm run build
@@ -209,6 +215,10 @@ http://localhost:3000
 #### Live Deployment
 
 🌐 https://flam-software-intern-project-production.up.railway.app
+
+or
+
+[Open Live Dashboard](https://flam-software-intern-project-production.up.railway.app)
 
 - /health
 - /api/status
