@@ -1,6 +1,8 @@
 ﻿# QueueCTL
 
-![QueueCTL banner](docs/assets/banner.svg)
+<p align="center">
+  <img src="docs/assets/banner.svg" width="900">
+</p>
 
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6)](https://www.typescriptlang.org/)
@@ -8,6 +10,7 @@
 [![Vitest](https://img.shields.io/badge/Vitest-Integration%20Tests-6E9F18)](https://vitest.dev/)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-4B5563)](https://github.com/)
+
 
 QueueCTL is a lightweight background job queue for Node.js built around a persistent SQLite backend and a long-running daemon.
 
@@ -23,18 +26,33 @@ QueueCTL was built to make background work visible and inspectable without depen
 - local-first persistence with SQLite
 - a clear runtime model that is easy to reason about and extend
 
-## Dashboard preview
+### 🌐 Live Web Dashboard
 
-![QueueCTL dashboard placeholder](docs/assets/dashboard2.png)
-![QueueCTL dashboard placeholder](docs/assets/dashboard3.png)
-![QueueCTL dashboard placeholder](docs/assets/dashboard4.png)
+**Open QueueCTL Dashboard**
 
-## Demo
+👉 **https://flam-software-intern-project-production.up.railway.app**
 
-![CLI demo placeholder](docs/assets/cli1.png)
-![CLI demo placeholder](docs/assets/cli2.png)
-![CLI demo placeholder](docs/assets/cli3.png)
-![CLI demo placeholder](docs/assets/cli4.png)
+The hosted dashboard allows you to inspect the running queue without setting up the project locally.
+
+## Dashboard Preview
+
+<p align="center">
+  <img src="docs/assets/dashboard2.png" width="32%">
+  <img src="docs/assets/dashboard3.png" width="32%">
+  <img src="docs/assets/dashboard4.png" width="32%">
+</p>
+
+## CLI Demo
+
+<p align="center">
+  <img src="docs/assets/cli1.png" width="48%">
+  <img src="docs/assets/cli2.png" width="48%">
+</p>
+
+<p align="center">
+  <img src="docs/assets/cli3.png" width="48%">
+  <img src="docs/assets/cli4.png" width="48%">
+</p>
 
 ## Features
 
@@ -48,6 +66,18 @@ QueueCTL was built to make background work visible and inspectable without depen
 - ✅ Configuration system for queue behavior
 - ✅ Priority-aware job ordering
 - ✅ Scheduled execution via run_after timestamps
+
+  ## 🛠 Tech Stack
+
+| Layer | Technologies |
+|--------|--------------|
+| Language | TypeScript |
+| Runtime | Node.js |
+| Database | SQLite (better-sqlite3) |
+| CLI | Commander.js |
+| Dashboard | Express.js |
+| Testing | Vitest |
+| IPC | Unix Socket / Windows Named Pipe |
 
 ## Architecture overview
 
@@ -158,13 +188,23 @@ queuectl status
 queuectl list --state completed
 ```
 
-### 6. Start the dashboard
+### 6. Dashboard
+
+#### Local
 
 ```bash
 npm run dashboard
 ```
 
-Open http://localhost:3000 and use the dashboard endpoints:
+Open:
+
+```text
+http://localhost:3000
+```
+
+#### Live Deployment
+
+🌐 https://flam-software-intern-project-production.up.railway.app
 
 - /health
 - /api/status
@@ -189,6 +229,42 @@ Supported payload fields:
 | run_after | No | string | ISO timestamp that delays execution |
 | timeout | No | number | Per-job timeout in milliseconds |
 | max_retries | No | number | Max retries for the job |
+
+
+## 🚀 Live Demo
+
+QueueCTL is deployed on **Railway**, allowing you to explore the dashboard and REST APIs without setting up the project locally.
+
+### 🌐 Dashboard
+
+https://flam-software-intern-project-production.up.railway.app
+
+### Available API Endpoints
+
+| Endpoint | Description |
+|-----------|-------------|
+| `/health` | Health check endpoint |
+| `/api/status` | Current queue status |
+| `/api/jobs` | List all jobs |
+| `/api/metrics` | Runtime metrics |
+
+### Example Requests
+
+```text
+GET https://flam-software-intern-project-production.up.railway.app/health
+```
+
+```text
+GET https://flam-software-intern-project-production.up.railway.app/api/status
+```
+
+```text
+GET https://flam-software-intern-project-production.up.railway.app/api/jobs
+```
+
+```text
+GET https://flam-software-intern-project-production.up.railway.app/api/metrics
+```
 
 ### Status
 
