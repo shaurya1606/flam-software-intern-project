@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <rect width="1200" height="720" fill="#f8fafc"/>
+  <rect x="60" y="70" width="1080" height="580" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+  <rect x="140" y="140" width="220" height="120" rx="18" fill="#0f172a"/>
+  <rect x="460" y="140" width="220" height="120" rx="18" fill="#38bdf8"/>
+  <rect x="780" y="140" width="220" height="120" rx="18" fill="#8b5cf6"/>
+  <rect x="300" y="360" width="220" height="120" rx="18" fill="#e2e8f0"/>
+  <rect x="620" y="360" width="220" height="120" rx="18" fill="#e2e8f0"/>
+  <text x="180" y="205" fill="#f8fafc" font-size="26" font-family="Segoe UI, Arial, sans-serif">CLI</text>
+  <text x="500" y="205" fill="#f8fafc" font-size="26" font-family="Segoe UI, Arial, sans-serif">Daemon</text>
+  <text x="820" y="205" fill="#f8fafc" font-size="26" font-family="Segoe UI, Arial, sans-serif">Workers</text>
+  <text x="335" y="425" fill="#0f172a" font-size="24" font-family="Segoe UI, Arial, sans-serif">IPC</text>
+  <text x="655" y="425" fill="#0f172a" font-size="24" font-family="Segoe UI, Arial, sans-serif">SQLite</text>
+  <path d="M360 200 L460 200" stroke="#64748b" stroke-width="4" fill="none"/>
+  <path d="M680 200 L780 200" stroke="#64748b" stroke-width="4" fill="none"/>
+  <path d="M260 260 L340 360" stroke="#64748b" stroke-width="4" fill="none"/>
+  <path d="M580 260 L660 360" stroke="#64748b" stroke-width="4" fill="none"/>
+</svg>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QueueCTL Dashboard</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-icon">Q</div>
+          <div>
+            <h1>QueueCTL</h1>
+            <p>Dashboard</p>
+          </div>
+        </div>
+
+        <nav class="nav-list" aria-label="Dashboard navigation">
+          <span class="nav-label">Overview</span>
+          <button class="nav-item active" data-target="status">Status</button>
+          <button class="nav-item" data-target="jobs">Jobs</button>
+          <button class="nav-item" data-target="metrics">Metrics</button>
+        </nav>
+      </aside>
+
+      <main class="container">
+        <header class="page-header">
+          <div>
+            <h2>QueueCTL Dashboard</h2>
+            <p id="updatedAt" class="meta">Last Updated: --:--:--</p>
+          </div>
+          <button id="refreshBtn">Refresh</button>
+        </header>
+
+        <section id="overview" class="cards">
+          <div id="statusCard" class="card card-panel">
+            <h3>Status</h3>
+            <div id="statusSummary" class="summary">Loading...</div>
+          </div>
+          <div id="metricsCard" class="card card-panel">
+            <h3>Metrics</h3>
+            <div id="metricsSummary" class="summary">Loading...</div>
+          </div>
+        </section>
+
+        <section id="jobs" class="card jobs-card">
+          <div class="section-header">
+            <h3>Jobs</h3>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>State</th>
+                  <th>Attempts</th>
+                  <th>Priority</th>
+                  <th>Exit Code</th>
+                  <th>Updated At</th>
+                </tr>
+              </thead>
+              <tbody id="jobsTableBody">
+                <tr><td colspan="6">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
