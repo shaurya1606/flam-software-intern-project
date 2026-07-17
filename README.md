@@ -25,11 +25,16 @@ QueueCTL was built to make background work visible and inspectable without depen
 
 ## Dashboard preview
 
-![QueueCTL dashboard placeholder](docs/assets/dashboard.svg)
+![QueueCTL dashboard placeholder](docs/assets/dashboard2.png)
+![QueueCTL dashboard placeholder](docs/assets/dashboard3.png)
+![QueueCTL dashboard placeholder](docs/assets/dashboard4.png)
 
 ## Demo
 
-![CLI demo placeholder](docs/assets/demo.svg)
+![CLI demo placeholder](docs/assets/cli1.png)
+![CLI demo placeholder](docs/assets/cli2.png)
+![CLI demo placeholder](docs/assets/cli3.png)
+![CLI demo placeholder](docs/assets/cli4.png)
 
 ## Features
 
