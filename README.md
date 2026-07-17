@@ -37,11 +37,14 @@ The hosted dashboard allows you to inspect the running queue without setting up 
 ## Dashboard Preview
 
 <p align="center">
-  <img src="docs/assets/dashboard2.png" width="32%">
-  <img src="docs/assets/dashboard3.png" width="32%">
+  <img src="docs/assets/dashboard2.png" width="60%">
 </p>
-
-  <img src="docs/assets/dashboard4.png" width="32%">
+<p align="center">
+  <img src="docs/assets/dashboard3.png" width="60%">
+</p>
+<p align="center">
+  <img src="docs/assets/dashboard4.png" width="60%">
+</p>
 
 ## CLI Demo
 
