@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "daemon": "node dist/src/daemon/daemon.js",
     "dashboard": "node dashboard/server.js",
-    "start": "node dist/src/daemon/daemon.js",
+    "start": "concurrently \"npm run daemon\" \"npm run dashboard\"",
     "cli": "node dist/bin/queuectl.js",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -16,13 +17,13 @@
     "queuectl": "./dist/bin/queuectl.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "shaurya srivastava",
   "description": "",
   "dependencies": {
     "better-sqlite3": "^12.4.1",
     "bullmq": "^5.63.0",
     "commander": "^14.0.2",
+    "concurrently": "^10.0.3",
     "dotenv": "^16.6.1",
     "express": "^4.21.2",
     "ioredis": "^5.8.2",
