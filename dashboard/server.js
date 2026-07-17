@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
 function getSocketPath() {
   if (process.env.SOCKET_PATH) return process.env.SOCKET_PATH;
@@ -79,7 +79,7 @@ app.get('/api/metrics', async (_req, res) => {
   }
 });
 
-const server = app.listen(port, () => {
+const server = app.listen(port, "0.0.0.0", () => {
   console.log(`Dashboard listening on http://localhost:${port}`);
 });
 
