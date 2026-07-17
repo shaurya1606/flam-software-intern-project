@@ -1,7 +1,7 @@
 ﻿# QueueCTL
 
 <p align="center">
-  <img src="docs/assets/banner.svg" width="100">
+  <img src="docs/assets/banner.svg" width="1000">
 </p>
 
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933)](https://nodejs.org/)
