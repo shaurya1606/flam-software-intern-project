@@ -10,6 +10,10 @@
 [![Vitest](https://img.shields.io/badge/Vitest-Integration%20Tests-6E9F18)](https://vitest.dev/)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-4B5563)](https://github.com/)
+[![🌐 Live Dashboard](https://img.shields.io/badge/Live_Dashboard-Railway-success?style=for-the-badge&logo=railway)](https://flam-software-intern-project-production.up.railway.app)
+[![📖 Documentation](https://img.shields.io/badge/Documentation-User_Guide-blue?style=for-the-badge)](docs/USER_GUIDE.md)
+[![🏗️ Architecture](https://img.shields.io/badge/Architecture-Design_Doc-orange?style=for-the-badge)](docs/ARCHITECTURE.md)
+
 
 
 QueueCTL is a lightweight background job queue for Node.js built around a persistent SQLite backend and a long-running daemon.
@@ -39,29 +43,33 @@ or
 
 The hosted dashboard allows you to inspect the running queue without setting up the project locally.
 
-## Dashboard Preview
+## 📸 Project Preview
+
+### 🌐 Dashboard
 
 <p align="center">
-  <img src="docs/assets/dashboard2.png" width="60%">
-</p>
-<p align="center">
-  <img src="docs/assets/dashboard3.png" width="60%">
-</p>
-<p align="center">
-  <img src="docs/assets/dashboard4.png" width="60%">
+  <img src="docs/assets/dashboard2.png" width="700">
+  <br><br>
+  <img src="docs/assets/dashboard3.png" width="700">
+  <br><br>
+  <img src="docs/assets/dashboard4.png" width="700">
 </p>
 
-## CLI Demo
+---
+
+### 💻 CLI
 
 <p align="center">
-  <img src="docs/assets/cli1.png" width="50%">
-  <img src="docs/assets/cli2.png" width="50%">
+  <img src="docs/assets/cli1.png" width="700">
+  <br><br>
+  <img src="docs/assets/cli2.png" width="700">
+  <br><br>
+  <img src="docs/assets/cli3.png" width="700">
+  <br><br>
+  <img src="docs/assets/cli4.png" width="700">
 </p>
 
-<p align="center">
-  <img src="docs/assets/cli3.png" width="50%">
-  <img src="docs/assets/cli4.png" width="50%">
-</p>
+---
 
 ## Features
 
@@ -256,11 +264,11 @@ https://flam-software-intern-project-production.up.railway.app
 ### Available API Endpoints
 
 | Endpoint | Description |
-|-----------|-------------|
-| `/health` | Health check endpoint |
-| `/api/status` | Current queue status |
-| `/api/jobs` | List all jobs |
-| `/api/metrics` | Runtime metrics |
+|----------|-------------|
+| [/health](https://flam-software-intern-project-production.up.railway.app/health) | Health check | /health |
+| [/api/status](https://flam-software-intern-project-production.up.railway.app/api/status) | Queue status | /api/status |
+| [/api/jobs](https://flam-software-intern-project-production.up.railway.app/api/jobs) | List all jobs | /api/jobs |
+| [/api/metrics](https://flam-software-intern-project-production.up.railway.app/api/metrics) | Runtime metrics | api/metrics |
 
 ### Example Requests
 
