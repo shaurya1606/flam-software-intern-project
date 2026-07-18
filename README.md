@@ -45,6 +45,9 @@
   <a href="docs/VALIDATION_REPORT.md">
     <img src="https://img.shields.io/badge/Validation-Assignment_Report-success?style=for-the-badge" />
   </a>
+   <a href="docs/DEMO_GUIDE.md">
+    <img src="https://img.shields.io/badge/Demo-Guide-success?style=for-the-badge" />
+  </a>
 <a href="https://drive.google.com/file/d/1Qem70Ic72vVo38wqdKxafCSAmEWHFq1P/view?usp=sharing">
 <img src="https://img.shields.io/badge/🎥-Demo%20Video-EA4335?style=for-the-badge">
 </a>
