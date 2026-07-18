@@ -46,7 +46,7 @@ This starts:
 The dashboard is then accessible at:
 
 ```
-http://localhost:3000
+http://localhost:8080
 ```
 
 The daemon will:
@@ -99,7 +99,7 @@ queuectl metrics
 
 Open
 
-http://localhost:3000
+http://localhost:8080
 
 or
 

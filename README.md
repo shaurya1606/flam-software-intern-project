@@ -33,6 +33,11 @@ Follow the User Gude for running the scripts of QueueCTL.
 
 [![Open Browser Workspace](https://github.com/codespaces/badge.svg)](https://laughing-carnival-4jgqxjpwrjrjh5r7q.github.dev/)
 
+### 🌐 Live Web Dashboard
+
+**Open QueueCTL Dashboard**
+
+👉 **https://flam-software-intern-project-production.up.railway.app**
 
 ## Why QueueCTL exists
 
@@ -42,16 +47,6 @@ QueueCTL was built to make background work visible and inspectable without depen
 - local-first persistence with SQLite
 - a clear runtime model that is easy to reason about and extend
 
-### 🌐 Live Web Dashboard
-
-**Open QueueCTL Dashboard**
-
-👉 **https://flam-software-intern-project-production.up.railway.app**
-
-
-or
-
-[Open Live Dashboard](https://flam-software-intern-project-production.up.railway.app)
 
 The hosted dashboard allows you to inspect the running queue without setting up the project locally.
 
