@@ -246,6 +246,8 @@ flowchart TD
 
 The dashboard is a small Express application in [dashboard/server.js](dashboard/server.js). It serves static files and exposes HTTP endpoints that proxy status, jobs, and metrics requests to the daemon over the same IPC path as the CLI.
 
+During development the dashboard is started automatically alongside the daemon through the npm start script, which runs both services concurrently.
+
 ## 14. Tradeoff analysis
 
 ### Why SQLite

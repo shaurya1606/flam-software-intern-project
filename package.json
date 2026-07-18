@@ -16,9 +16,20 @@
   "bin": {
     "queuectl": "./dist/bin/queuectl.js"
   },
-  "keywords": [],
+  "keywords": [
+  "queue",
+  "job-queue",
+  "cli",
+  "worker",
+  "background-jobs",
+  "sqlite",
+  "typescript",
+  "scheduler",
+  "daemon",
+  "queuectl"
+],
   "author": "shaurya srivastava",
-  "description": "",
+  "description": "A lightweight CLI-based background job queue with SQLite persistence, worker management, retries, dead-letter queue, and a live monitoring dashboard.",
   "dependencies": {
     "better-sqlite3": "^12.4.1",
     "bullmq": "^5.63.0",

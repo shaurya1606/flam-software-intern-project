@@ -23,8 +23,6 @@ In practice, QueueCTL is useful for:
 ## 3. Installation
 
 ```bash
-git clone <repository-url>
-cd QueueCTL
 npm install
 npm run build
 npm link
@@ -32,12 +30,23 @@ npm link
 
 The CLI entry point is registered as `queuectl` through the package bin mapping. You can also run the built entry point directly if needed.
 
-## 4. Start the daemon
+## 4. Start QueueCTL
 
 Open one terminal and run:
 
 ```bash
 npm start
+```
+
+This starts:
+
+- QueueCTL Daemon
+- Dashboard Server
+
+The dashboard is then accessible at:
+
+```
+http://localhost:3000
 ```
 
 The daemon will:
@@ -88,11 +97,13 @@ queuectl metrics
 
 ### Step 5: start the dashboard
 
-```bash
-npm run dashboard
-```
+Open
 
-Open http://localhost:3000 to view the dashboard.
+http://localhost:3000
+
+or
+
+https://flam-software-intern-project-production.up.railway.app
 
 ## 6. CLI reference
 
@@ -224,11 +235,25 @@ queuectl config set timeout 10000
 
 Start the dashboard with:
 
+The dashboard starts automatically when running:
+
 ```bash
-npm run dashboard
+npm start
 ```
 
-It listens on port `3000` by default and can be overridden with `PORT`.
+Default local URL:
+
+```
+http://localhost:8080
+```
+
+Hosted version:
+
+```
+https://flam-software-intern-project-production.up.railway.app
+```
+
+It listens on port `8080` by default and can be overridden with `PORT`.
 
 The dashboard exposes these routes:
 

@@ -35,12 +35,13 @@ Run the test suite:
 npm test
 ```
 
-Useful scripts:
+Useful scripts
 
 ```bash
+npm start
+npm test
 npm run test:watch
 npm run test:coverage
-npm run dashboard
 ```
 
 ## 3. How the CLI is wired
@@ -49,7 +50,7 @@ The CLI entry point in [bin/queuectl.ts](bin/queuectl.ts) reads the command modu
 
 ## 4. Daemon lifecycle
 
-The daemon is created in [src/daemon/daemon.ts](src/daemon/daemon.ts). On startup it:
+The project start script launches both the daemon and the dashboard using concurrently. On startup it:
 
 1. resolves the socket path
 2. initializes the database and metrics tables

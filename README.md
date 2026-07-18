@@ -166,12 +166,13 @@ tests/                    integration scenarios against a real daemon
 ### 1. Install dependencies
 
 ```bash
-git clone [<repository-url>](https://github.com/shaurya1606/flam-software-intern-project.git)
+git clone https://github.com/shaurya1606/flam-software-intern-project.git
 cd QueueCTL
 npm install
 npm run build
 npm link
 ```
+After installation, start the complete QueueCTL stack (daemon + dashboard):
 
 ### 2. Start the daemon
 
@@ -179,7 +180,14 @@ npm link
 npm start
 ```
 
-The daemon initializes SQLite, creates the local IPC socket, and begins listening for CLI and dashboard requests.
+This starts both:
+
+- QueueCTL Daemon
+- Express Dashboard
+
+The dashboard is available at:
+
+http://localhost:8080
 
 ### 3. Enqueue a job in another terminal
 
@@ -208,17 +216,18 @@ queuectl list --state completed
 
 ### 6. Dashboard
 
-#### Local
-
 ```bash
-npm run dashboard
+npm start
 ```
 
-Open:
+This starts both:
 
-```text
+- QueueCTL Daemon
+- Express Dashboard
+
+The dashboard is available at:
+
 http://localhost:3000
-```
 
 #### Live Deployment
 
@@ -255,7 +264,17 @@ Supported payload fields:
 
 ## 🚀 Live Demo
 
-QueueCTL is deployed on **Railway**, allowing you to explore the dashboard and REST APIs without setting up the project locally.
+## 🚀 Live Demo
+
+The latest deployment is available on Railway.
+
+| Resource | URL |
+|----------|-----|
+| 🌐 Dashboard | https://flam-software-intern-project-production.up.railway.app |
+| ❤️ Health | https://flam-software-intern-project-production.up.railway.app/health |
+| 📊 Status API | https://flam-software-intern-project-production.up.railway.app/api/status |
+| 📋 Jobs API | https://flam-software-intern-project-production.up.railway.app/api/jobs |
+| 📈 Metrics API | https://flam-software-intern-project-production.up.railway.app/api/metrics |
 
 ### 🌐 Dashboard
 
