@@ -1,6 +1,8 @@
 ﻿# QueueCTL
 
-![QueueCTL banner](docs/assets/banner.svg)
+<p align="center">
+  <img src="docs/assets/banner.svg" width="1000">
+</p>
 
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6)](https://www.typescriptlang.org/)
@@ -8,7 +10,12 @@
 [![Vitest](https://img.shields.io/badge/Vitest-Integration%20Tests-6E9F18)](https://vitest.dev/)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-4B5563)](https://github.com/)
+[![🌐 Live Dashboard](https://img.shields.io/badge/Live_Dashboard-Railway-success?style=for-the-badge&logo=railway)](https://flam-software-intern-project-production.up.railway.app)
+[![📖 Documentation](https://img.shields.io/badge/Documentation-User_Guide-blue?style=for-the-badge)](docs/USER_GUIDE.md)
+[![🏗️ Architecture](https://img.shields.io/badge/Architecture-Design_Doc-orange?style=for-the-badge)](docs/ARCHITECTURE.md)
 [![Open in Codespaces](https://img.shields.io/badge/Open%20in-Codespaces-0969DA?logo=github)](https://codespaces.new/shaurya1606/flam-software-intern-project)
+
+
 
 QueueCTL is a lightweight background job queue for Node.js built around a persistent SQLite backend and a long-running daemon.
 
@@ -26,6 +33,7 @@ Follow the User Gude for running the scripts of QueueCTL.
 
 [![Open Browser Workspace](https://github.com/codespaces/badge.svg)](https://laughing-carnival-4jgqxjpwrjrjh5r7q.github.dev/)
 
+
 ## Why QueueCTL exists
 
 QueueCTL was built to make background work visible and inspectable without depending on a separate broker or cloud service. The implementation focuses on three things:
@@ -34,18 +42,46 @@ QueueCTL was built to make background work visible and inspectable without depen
 - local-first persistence with SQLite
 - a clear runtime model that is easy to reason about and extend
 
-## Dashboard preview
+### 🌐 Live Web Dashboard
 
-![QueueCTL dashboard placeholder](docs/assets/dashboard2.png)
-![QueueCTL dashboard placeholder](docs/assets/dashboard3.png)
-![QueueCTL dashboard placeholder](docs/assets/dashboard4.png)
+**Open QueueCTL Dashboard**
 
-## Demo
+👉 **https://flam-software-intern-project-production.up.railway.app**
 
-![CLI demo placeholder](docs/assets/cli1.png)
-![CLI demo placeholder](docs/assets/cli2.png)
-![CLI demo placeholder](docs/assets/cli3.png)
-![CLI demo placeholder](docs/assets/cli4.png)
+
+or
+
+[Open Live Dashboard](https://flam-software-intern-project-production.up.railway.app)
+
+The hosted dashboard allows you to inspect the running queue without setting up the project locally.
+
+## 📸 Project Preview
+
+### 🌐 Dashboard
+
+<p align="center">
+  <img src="docs/assets/dashboard2.png" width="700">
+  <br><br>
+  <img src="docs/assets/dashboard3.png" width="700">
+  <br><br>
+  <img src="docs/assets/dashboard4.png" width="700">
+</p>
+
+---
+
+### 💻 CLI
+
+<p align="center">
+  <img src="docs/assets/cli1.png" width="700">
+  <br><br>
+  <img src="docs/assets/cli2.png" width="700">
+  <br><br>
+  <img src="docs/assets/cli3.png" width="700">
+  <br><br>
+  <img src="docs/assets/cli4.png" width="700">
+</p>
+
+---
 
 ## Features
 
@@ -59,6 +95,19 @@ QueueCTL was built to make background work visible and inspectable without depen
 - ✅ Configuration system for queue behavior
 - ✅ Priority-aware job ordering
 - ✅ Scheduled execution via run_after timestamps
+
+  ## 🛠 Tech Stack
+
+| Layer | Technologies |
+|--------|--------------|
+| Language | TypeScript |
+| Runtime | Node.js |
+| Database | SQLite (better-sqlite3) |
+| CLI | Commander.js |
+| Dashboard | Express.js |
+| Testing | Vitest |
+| IPC | Unix Socket / Windows Named Pipe |
+| Frontend | Html, Css, Javascript |
 
 ## Architecture overview
 
@@ -129,12 +178,13 @@ tests/                    integration scenarios against a real daemon
 ### 1. Install dependencies
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/shaurya1606/flam-software-intern-project.git
 cd QueueCTL
 npm install
 npm run build
 npm link
 ```
+After installation, start the complete QueueCTL stack (daemon + dashboard):
 
 ### 2. Start the daemon
 
@@ -142,7 +192,14 @@ npm link
 npm start
 ```
 
-The daemon initializes SQLite, creates the local IPC socket, and begins listening for CLI and dashboard requests.
+This starts both:
+
+- QueueCTL Daemon
+- Express Dashboard
+
+The dashboard is available at:
+
+http://localhost:8080
 
 ### 3. Enqueue a job in another terminal
 
@@ -169,13 +226,28 @@ queuectl status
 queuectl list --state completed
 ```
 
-### 6. Start the dashboard
+### 6. Dashboard
 
 ```bash
-npm run dashboard
+npm start
 ```
 
-Open http://localhost:3000 and use the dashboard endpoints:
+This starts both:
+
+- QueueCTL Daemon
+- Express Dashboard
+
+The dashboard is available at:
+
+http://localhost:3000
+
+#### Live Deployment
+
+🌐 https://flam-software-intern-project-production.up.railway.app
+
+or
+
+[Open Live Dashboard](https://flam-software-intern-project-production.up.railway.app)
 
 - /health
 - /api/status
@@ -200,6 +272,52 @@ Supported payload fields:
 | run_after | No | string | ISO timestamp that delays execution |
 | timeout | No | number | Per-job timeout in milliseconds |
 | max_retries | No | number | Max retries for the job |
+
+
+## 🚀 Live Demo
+
+## 🚀 Live Demo
+
+The latest deployment is available on Railway.
+
+| Resource | URL |
+|----------|-----|
+| 🌐 Dashboard | https://flam-software-intern-project-production.up.railway.app |
+| ❤️ Health | https://flam-software-intern-project-production.up.railway.app/health |
+| 📊 Status API | https://flam-software-intern-project-production.up.railway.app/api/status |
+| 📋 Jobs API | https://flam-software-intern-project-production.up.railway.app/api/jobs |
+| 📈 Metrics API | https://flam-software-intern-project-production.up.railway.app/api/metrics |
+
+### 🌐 Dashboard
+
+https://flam-software-intern-project-production.up.railway.app
+
+### Available API Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| [/health](https://flam-software-intern-project-production.up.railway.app/health) | Health check | /health |
+| [/api/status](https://flam-software-intern-project-production.up.railway.app/api/status) | Queue status | /api/status |
+| [/api/jobs](https://flam-software-intern-project-production.up.railway.app/api/jobs) | List all jobs | /api/jobs |
+| [/api/metrics](https://flam-software-intern-project-production.up.railway.app/api/metrics) | Runtime metrics | api/metrics |
+
+### Example Requests
+
+```text
+GET https://flam-software-intern-project-production.up.railway.app/health
+```
+
+```text
+GET https://flam-software-intern-project-production.up.railway.app/api/status
+```
+
+```text
+GET https://flam-software-intern-project-production.up.railway.app/api/jobs
+```
+
+```text
+GET https://flam-software-intern-project-production.up.railway.app/api/metrics
+```
 
 ### Status
 
