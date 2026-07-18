@@ -494,9 +494,9 @@ For deeper contributor guidance, see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
 ## Documentation map
 
-- [docs/USER_GUIDE.md](docs/USER_GUIDE.md) — product-facing usage guide
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — engineering design document
-- [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) — contributor workflow and debugging guide
+| [docs/USER_GUIDE.md](docs/USER_GUIDE.md) | product-facing usage guide |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | engineering design document |
+| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | contributor workflow and debugging guide |
 | [VALIDATION_REPORT.md](docs/VALIDATION_REPORT.md) | Assignment compliance, feature verification and evaluation report |
 
 ---
@@ -520,11 +520,3 @@ The validation includes:
 
 ➡️ [Documentation Validation Report](docs/VALIDATION_REPORT.md)
 
-## Verification status
-
-The documentation in this repository is verified against the current source tree and the current test suite. Local verification completed with:
-
-```bash
-npm run build
-npm test
-```
