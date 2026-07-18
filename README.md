@@ -467,7 +467,28 @@ For deeper contributor guidance, see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 - [docs/USER_GUIDE.md](docs/USER_GUIDE.md) — product-facing usage guide
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — engineering design document
 - [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) — contributor workflow and debugging guide
-- [docs/VALIDATION_REPORT.md](docs/VALIDATION_REPORT.md) — feature-by-feature documentation validation
+| [VALIDATION_REPORT.md](docs/VALIDATION_REPORT.md) | Assignment compliance, feature verification and evaluation report |
+
+---
+
+# ✅ Assignment Validation
+
+This repository has been validated against every mandatory and bonus requirement from the internship assignment.
+
+The validation includes:
+
+- Functional requirements
+- CLI command verification
+- Worker lifecycle
+- Retry & DLQ validation
+- Persistence checks
+- Documentation review
+- Testing coverage
+- Bonus feature verification
+
+📄 **Detailed report**
+
+➡️ [Documentation Validation Report](docs/VALIDATION_REPORT.md)
 
 ## Verification status
 
