@@ -13,6 +13,7 @@
 [![🌐 Live Dashboard](https://img.shields.io/badge/Live_Dashboard-Railway-success?style=for-the-badge&logo=railway)](https://flam-software-intern-project-production.up.railway.app)
 [![📖 Documentation](https://img.shields.io/badge/Documentation-User_Guide-blue?style=for-the-badge)](docs/USER_GUIDE.md)
 [![🏗️ Architecture](https://img.shields.io/badge/Architecture-Design_Doc-orange?style=for-the-badge)](docs/ARCHITECTURE.md)
+[![Open in Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/shaurya1606/flam-software-intern-project)
 
 
 
@@ -21,6 +22,10 @@ QueueCTL is a lightweight background job queue for Node.js built around a persis
 It provides durable job execution, worker management, retries, dead-letter queues and runtime inspection through both a CLI and a lightweight dashboard.
 
 > QueueCTL is not a distributed queue system. It is a compact, implementation-friendly queue for local development, automation, and learning about job orchestration without introducing a large infrastructure stack.
+
+## 🚀 Try QueueCTL in your Browser
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/shaurya1606/flam-software-intern-project)
 
 ## Why QueueCTL exists
 
