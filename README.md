@@ -4,18 +4,54 @@
   <img src="docs/assets/banner.svg" width="1000">
 </p>
 
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933)](https://nodejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6)](https://www.typescriptlang.org/)
-[![SQLite](https://img.shields.io/badge/SQLite-WAL%20Persistence-003B57)](https://www.sqlite.org/)
-[![Vitest](https://img.shields.io/badge/Vitest-Integration%20Tests-6E9F18)](https://vitest.dev/)
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-4B5563)](https://github.com/)
-[![🌐 Live Dashboard](https://img.shields.io/badge/Live_Dashboard-Railway-success?style=for-the-badge&logo=railway)](https://flam-software-intern-project-production.up.railway.app)
-[![📖 Documentation](https://img.shields.io/badge/Documentation-User_Guide-blue?style=for-the-badge)](docs/USER_GUIDE.md)
-[![🏗️ Architecture](https://img.shields.io/badge/Architecture-Design_Doc-orange?style=for-the-badge)](docs/ARCHITECTURE.md)
-[![Open in Codespaces](https://img.shields.io/badge/Open%20in-Codespaces-0969DA?logo=github)](https://codespaces.new/shaurya1606/flam-software-intern-project)
 
+<p align="center">
+  <a href="https://nodejs.org/">
+    <img src="https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white" />
+  </a>
+  <a href="https://www.typescriptlang.org/">
+    <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" />
+  </a>
+  <a href="https://www.sqlite.org/">
+    <img src="https://img.shields.io/badge/SQLite-WAL%20Mode-003B57?logo=sqlite&logoColor=white" />
+  </a>
+  <a href="https://github.com/shaurya1606/flam-software-intern-project">
+    <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-4B5563" />
+  </a>
+</p>
 
+<p align="center">
+  <a href="./tests">
+    <img src="https://img.shields.io/badge/Tests-Passing-brightgreen" />
+  </a>
+  <a href="./docs">
+    <img src="https://img.shields.io/badge/Documentation-Comprehensive-blue" />
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/License-ISC-blue" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://flam-software-intern-project-production.up.railway.app">
+    <img src="https://img.shields.io/badge/Live_Dashboard-Railway-success?style=for-the-badge&logo=railway" />
+  </a>
+  <a href="docs/USER_GUIDE.md">
+    <img src="https://img.shields.io/badge/User_Guide-Documentation-0A66C2?style=for-the-badge" />
+  </a>
+  <a href="docs/ARCHITECTURE.md">
+    <img src="https://img.shields.io/badge/Architecture-Design_Document-orange?style=for-the-badge" />
+  </a>
+  <a href="docs/VALIDATION_REPORT.md">
+    <img src="https://img.shields.io/badge/Validation-Assignment_Report-success?style=for-the-badge" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://codespaces.new/shaurya1606/flam-software-intern-project">
+    <img src="https://github.com/codespaces/badge.svg" alt="Open in GitHub Codespaces" />
+  </a>
+</p>
 
 QueueCTL is a lightweight background job queue for Node.js built around a persistent SQLite backend and a long-running daemon.
 
