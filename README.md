@@ -307,8 +307,6 @@ Supported payload fields:
 
 ## 🚀 Live Demo
 
-## 🚀 Live Demo
-
 The latest deployment is available on Railway.
 
 | Resource | URL |
@@ -318,10 +316,6 @@ The latest deployment is available on Railway.
 | 📊 Status API | https://flam-software-intern-project-production.up.railway.app/api/status |
 | 📋 Jobs API | https://flam-software-intern-project-production.up.railway.app/api/jobs |
 | 📈 Metrics API | https://flam-software-intern-project-production.up.railway.app/api/metrics |
-
-### 🌐 Dashboard
-
-https://flam-software-intern-project-production.up.railway.app
 
 ### Available API Endpoints
 
