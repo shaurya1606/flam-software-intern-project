@@ -1,433 +1,553 @@
-# QueueCTL Demo Guide
+# QueueCTL
 
-This guide provides a complete walkthrough of QueueCTL's functionality. Follow the commands in order to verify all required features and bonus implementations.
+<p align="center">
+  <img src="docs/assets/banner.svg" width="1000">
+</p>
 
-> **Note**
+
+<p align="center">
+  <a href="https://nodejs.org/">
+    <img src="https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white" />
+  </a>
+  <a href="https://www.typescriptlang.org/">
+    <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" />
+  </a>
+  <a href="https://www.sqlite.org/">
+    <img src="https://img.shields.io/badge/SQLite-WAL%20Mode-003B57?logo=sqlite&logoColor=white" />
+  </a>
+  <a href="https://github.com/shaurya1606/flam-software-intern-project">
+    <img src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-4B5563" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="./tests">
+    <img src="https://img.shields.io/badge/Tests-Passing-brightgreen" />
+  </a>
+  <a href="./docs">
+    <img src="https://img.shields.io/badge/Documentation-Comprehensive-blue" />
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/License-ISC-blue" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://flam-software-intern-project-production.up.railway.app">
+    <img src="https://img.shields.io/badge/Live_Dashboard-Railway-success?style=for-the-badge&logo=railway" />
+  </a>
+  <a href="docs/USER_GUIDE.md">
+    <img src="https://img.shields.io/badge/User_Guide-Documentation-0A66C2?style=for-the-badge" />
+  </a>
+  <a href="docs/ARCHITECTURE.md">
+    <img src="https://img.shields.io/badge/Architecture-Design_Document-orange?style=for-the-badge" />
+  </a>
+  <a href="docs/VALIDATION_REPORT.md">
+    <img src="https://img.shields.io/badge/Validation-Assignment_Report-success?style=for-the-badge" />
+  </a>
+<a href="https://drive.google.com/file/d/1Qem70Ic72vVo38wqdKxafCSAmEWHFq1P/view?usp=sharing">
+<img src="https://img.shields.io/badge/🎥-Demo%20Video-EA4335?style=for-the-badge">
+</a>
+</p>
+
+<p align="center">
+  <a href="https://codespaces.new/shaurya1606/flam-software-intern-project">
+    <img src="https://github.com/codespaces/badge.svg" alt="Open in GitHub Codespaces" />
+  </a>
+</p>
+
+
+QueueCTL is a lightweight background job queue for Node.js built around a persistent SQLite backend and a long-running daemon.
+
+It provides durable job execution, worker management, retries, dead-letter queues and runtime inspection through both a CLI and a lightweight dashboard.
+
+> QueueCTL is not a distributed queue system. It is a compact, implementation-friendly queue for local development, automation, and learning about job orchestration without introducing a large infrastructure stack.
+
+## 🎥 Project Demonstration
+
+See QueueCTL running end-to-end, including installation, worker management, retries, DLQ handling, dashboard, and live job execution.
+
+<p align="center">
+
+[![Watch Demo](https://img.shields.io/badge/▶%20Watch%20Demo-Google%20Drive-4285F4?style=for-the-badge&logo=google-drive&logoColor=white)](https://drive.google.com/file/d/1Qem70Ic72vVo38wqdKxafCSAmEWHFq1P/view?usp=sharing)
+
+</p>
+
+> **What's covered**
 >
-> - Run these commands from the project root.
-> - Open a **new terminal** for CLI commands while `npm start` is running.
-> - The dashboard will be available at **http://localhost:8080**.
+> - Project overview
+> - Repository walkthrough
+> - Local setup
+> - GitHub Codespaces execution
+> - Queue operations
+> - Worker management
+> - Retry & Exponential Backoff
+> - Dead Letter Queue (DLQ)
+> - Configuration management
+> - Dashboard walkthrough
+> - Live API demonstration
+> - Bonus features (Priority Jobs, Delayed Jobs, Timeout Handling)
+
+## 🌐 Browser Workspace
+
+QueueCTL includes a ready-to-use browser workspace for anyone who wants to explore the project without configuring a local environment.
+
+Open the workspace below to browse the source code, run the CLI, launch the dashboard, and experiment with QueueCTL in a fully configured development environment.
+
+Follow the User Gude for running the scripts of QueueCTL.
+
+[![Open Browser Workspace](https://github.com/codespaces/badge.svg)](https://laughing-carnival-4jgqxjpwrjrjh5r7q.github.dev/)
+
+### 🌐 Live Web Dashboard
+
+**Open QueueCTL Dashboard**
+
+👉 **https://flam-software-intern-project-production.up.railway.app**
+
+## Why QueueCTL exists
+
+QueueCTL was built to make background work visible and inspectable without depending on a separate broker or cloud service. The implementation focuses on three things:
+
+- transparent state transitions for each job
+- local-first persistence with SQLite
+- a clear runtime model that is easy to reason about and extend
+
+
+The hosted dashboard allows you to inspect the running queue without setting up the project locally.
+
+## 📸 Project Preview
+
+### 🌐 Dashboard
+
+<p align="center">
+  <img src="docs/assets/dashboard2.png" width="700">
+  <br><br>
+  <img src="docs/assets/dashboard3.png" width="700">
+  <br><br>
+  <img src="docs/assets/dashboard4.png" width="700">
+</p>
 
 ---
 
-# 1. Build the Project (Local Only)
+### 💻 CLI
+
+<p align="center">
+  <img src="docs/assets/cli1.png" width="700">
+  <br><br>
+  <img src="docs/assets/cli2.png" width="700">
+  <br><br>
+  <img src="docs/assets/cli3.png" width="700">
+  <br><br>
+  <img src="docs/assets/cli4.png" width="700">
+</p>
+
+---
+
+## Features
+
+- ✅ SQLite persistence for jobs, configuration, and metrics
+- ✅ Local IPC between CLI, daemon, and dashboard
+- ✅ Worker pool with child-process workers
+- ✅ Dead-letter queue handling for exhausted retries
+- ✅ Retry engine with configurable delay/backoff behavior
+- ✅ Metrics and basic runtime statistics
+- ✅ Dashboard endpoints for status, jobs, and metrics
+- ✅ Configuration system for queue behavior
+- ✅ Priority-aware job ordering
+- ✅ Scheduled execution via run_after timestamps
+
+  ## 🛠 Tech Stack
+
+| Layer | Technologies |
+|--------|--------------|
+| Language | TypeScript |
+| Runtime | Node.js |
+| Database | SQLite (better-sqlite3) |
+| CLI | Commander.js |
+| Dashboard | Express.js |
+| Testing | Vitest |
+| IPC | Unix Socket / Windows Named Pipe |
+| Frontend | Html, Css, Javascript |
+
+## Architecture overview
+
+```mermaid
+flowchart LR
+    A[CLI] --> B[Daemon]
+    C[Dashboard] --> B
+    B --> D[(SQLite)]
+    B --> E[Worker Processes]
+    E --> D
+```
+
+## Request flow
+
+```mermaid
+sequenceDiagram
+    participant CLI as CLI
+    participant Daemon as Daemon
+    participant DB as SQLite
+    participant Worker as Worker
+
+    CLI->>Daemon: enqueue(job)
+    Daemon->>DB: insert pending job
+    Worker->>DB: poll and lock candidate
+    DB-->>Worker: job row
+    Worker->>Worker: execute command
+    Worker->>DB: update completed/failed/dead
+```
+
+## Job lifecycle
+
+```mermaid
+stateDiagram-v2
+    [*] --> pending
+    pending --> processing: worker claims job
+    processing --> completed: success
+    processing --> failed: failure
+    failed --> pending: retry delay elapsed
+    failed --> dead: retries exhausted
+    dead --> [*]
+```
+
+## Repository structure
+
+```text
+bin/                      CLI bootstrap entry point
+src/cli/commands/         CLI subcommands (enqueue, status, list, worker, metrics, dlq, config)
+src/daemon/               daemon and worker entrypoints
+src/db/                   SQLite persistence layer
+src/lib/                  daemon logic and CLI IPC client
+src/type.ts               shared TypeScript types
+Dashboard/                Express dashboard and browser assets
+tests/                    integration scenarios against a real daemon
+```
+
+### Major directories
+
+- [bin](bin) — the Node entry point that registers the CLI commands.
+- [src/cli/commands](src/cli/commands) — the command modules that map CLI verbs to daemon requests.
+- [src/daemon](src/daemon) — the long-running daemon and worker implementations.
+- [src/db](src/db) — the SQLite schema, initialization code, and query helpers.
+- [src/lib](src/lib) — the queue service layer and the CLI-side IPC client.
+- [dashboard](dashboard) — the Express server and static assets for the web dashboard.
+- [tests](tests) — end-to-end scenario tests that exercise the live daemon and database.
+
+## Quick start
+
+### 1. Install dependencies
 
 ```bash
+git clone https://github.com/shaurya1606/flam-software-intern-project.git
+cd QueueCTL
 npm install
 npm run build
 npm link
 ```
+After installation, start the complete QueueCTL stack (daemon + dashboard):
 
----
-
-# 2. Start QueueCTL
+### 2. Start the daemon
 
 ```bash
 npm start
 ```
 
----
+This starts both:
 
-# 3. Open the Dashboard
+- QueueCTL Daemon
+- Express Dashboard
 
-Open in your browser:
+The dashboard is available at:
 
-```
 http://localhost:8080
-```
 
----
-
-# 4. Check Initial Queue Status
+### 3. Enqueue a job in another terminal
 
 ```bash
-queuectl status
+queuectl enqueue '{"id":"job1","command":"echo hello"}'
 ```
 
----
+Expected output:
 
-# 5. View Current Configuration
-
-```bash
-queuectl config show
+```text
+✔ Job 'job1' enqueued.
 ```
 
----
-
-# 6. Update Queue Configuration
-
-```bash
-queuectl config set max-retries 3
-```
-
-```bash
-queuectl config set backoff exponential
-```
-
-```bash
-queuectl config set delay-base 2
-```
-
-```bash
-queuectl config set timeout 5000
-```
-
----
-
-# 7. Verify Updated Configuration
-
-```bash
-queuectl config show
-```
-
----
-
-# 8. Start Workers
-
-### Single Worker
+### 4. Start a worker
 
 ```bash
 queuectl worker start --count 1
 ```
 
-### Multiple Workers
-
-```bash
-queuectl worker start --count 3
-```
-
----
-
-# 9. Enqueue a Successful Job
-
-```bash
-queuectl enqueue '{"id":"job1","command":"echo Hello QueueCTL"}'
-```
-
----
-
-# 10. Enqueue Another Successful Job
-
-```bash
-queuectl enqueue '{"id":"job2","command":"node -v"}'
-```
-
----
-
-# 11. Test Priority Queue (Bonus)
-
-```bash
-queuectl enqueue '{"id":"priority-job","command":"echo HIGH PRIORITY","priority":1}'
-```
-
----
-
-# 12. Test Scheduled Job (Bonus)
-
-```bash
-queuectl enqueue '{"id":"delay-job","command":"echo DELAYED","run_after":"2026-07-18T15:46:00Z"}'
-```
-
----
-
-# 13. Test Job Timeout (Bonus)
-
-### Linux / macOS / Codespaces
-
-```bash
-queuectl enqueue '{"id":"timeout-job","command":"sleep 10","timeout":1000}'
-```
-
-### Windows
-
-Replace the command with any long-running command available on your system.
-
----
-
-# 14. Test Retry Mechanism
-
-### Linux / macOS / Codespaces
-
-```bash
-queuectl enqueue '{"id":"retry-job","command":"false"}'
-```
-
-### Windows
-
-```bash
-queuectl enqueue '{"id":"retry-job","command":"invalid_command_xyz"}'
-```
-
----
-
-# 15. Test Invalid Command
-
-```bash
-queuectl enqueue '{"id":"bad-job","command":"this_command_does_not_exist"}'
-```
-
----
-
-# 16. Check Queue Status
+### 5. Inspect the queue
 
 ```bash
 queuectl status
-```
-
----
-
-# 17. View Pending Jobs
-
-```bash
-queuectl list --state pending
-```
-
----
-
-# 18. View Processing Jobs
-
-```bash
-queuectl list --state processing
-```
-
----
-
-# 19. View Completed Jobs
-
-```bash
 queuectl list --state completed
 ```
 
----
-
-# 20. View Failed Jobs
+### 6. Dashboard
 
 ```bash
-queuectl list --state failed
-```
-
----
-
-# 21. View Dead Letter Queue Jobs
-
-```bash
-queuectl list --state dead
-```
-
----
-
-# 22. View Runtime Metrics
-
-```bash
-queuectl metrics
-```
-
----
-
-# 23. View DLQ
-
-```bash
-queuectl dlq list
-```
-
----
-
-# 24. Retry a Dead Job
-
-```bash
-queuectl dlq retry retry-job
-```
-
-or
-
-```bash
-queuectl dlq retry bad-job
-```
-
----
-
-# 25. Verify Job Returned to Queue
-
-```bash
-queuectl list --state pending
-```
-
----
-
-# 26. Check Queue Status Again
-
-```bash
-queuectl status
-```
-
----
-
-# 27. View Updated Metrics
-
-```bash
-queuectl metrics
-```
-
----
-
-# 28. Stop Workers Gracefully
-
-```bash
-queuectl worker stop
-```
-
----
-
-# 29. Final Queue Status
-
-```bash
-queuectl status
-```
-
----
-
-# Dashboard API Verification
-
-Open each endpoint in your browser.
-
-## Health Check
-
-```
-http://localhost:8080/health
-```
-
-## Queue Status
-
-```
-http://localhost:8080/api/status
-```
-
-## Jobs
-
-```
-http://localhost:8080/api/jobs
-```
-
-## Metrics
-
-```
-http://localhost:8080/api/metrics
-```
-
----
-
-# GitHub Codespaces Demo
-
-After opening the repository in GitHub Codespaces:
-
-```bash
-npm install
-npm run build
 npm start
 ```
 
-Then execute:
+This starts both:
+
+- QueueCTL Daemon
+- Express Dashboard
+
+The dashboard is available at:
+
+http://localhost:3000
+
+#### Live Deployment
+
+🌐 https://flam-software-intern-project-production.up.railway.app
+
+or
+
+[Open Live Dashboard](https://flam-software-intern-project-production.up.railway.app)
+
+- /health
+- /api/status
+- /api/jobs
+- /api/metrics
+
+## CLI reference
+
+### Enqueue
+
+```bash
+queuectl enqueue '{"id":"job1","command":"echo hello"}'
+```
+
+Supported payload fields:
+
+| Field | Required | Type | Description |
+| --- | --- | --- | --- |
+| id | Yes | string | Unique job identifier |
+| command | Yes | string | Shell command executed by a worker |
+| priority | No | number | `0` for normal, `1` for high |
+| run_after | No | string | ISO timestamp that delays execution |
+| timeout | No | number | Per-job timeout in milliseconds |
+| max_retries | No | number | Max retries for the job |
+
+
+## 🚀 Live Demo
+
+The latest deployment is available on Railway.
+
+| Resource | URL |
+|----------|-----|
+| 🌐 Dashboard | https://flam-software-intern-project-production.up.railway.app |
+| ❤️ Health | https://flam-software-intern-project-production.up.railway.app/health |
+| 📊 Status API | https://flam-software-intern-project-production.up.railway.app/api/status |
+| 📋 Jobs API | https://flam-software-intern-project-production.up.railway.app/api/jobs |
+| 📈 Metrics API | https://flam-software-intern-project-production.up.railway.app/api/metrics |
+
+
+
+### Available API Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| [/health](https://flam-software-intern-project-production.up.railway.app/health) | Health check | /health |
+| [/api/status](https://flam-software-intern-project-production.up.railway.app/api/status) | Queue status | /api/status |
+| [/api/jobs](https://flam-software-intern-project-production.up.railway.app/api/jobs) | List all jobs | /api/jobs |
+| [/api/metrics](https://flam-software-intern-project-production.up.railway.app/api/metrics) | Runtime metrics | api/metrics |
+
+### Example Requests
+
+```text
+GET https://flam-software-intern-project-production.up.railway.app/health
+```
+
+```text
+GET https://flam-software-intern-project-production.up.railway.app/api/status
+```
+
+```text
+GET https://flam-software-intern-project-production.up.railway.app/api/jobs
+```
+
+```text
+GET https://flam-software-intern-project-production.up.railway.app/api/metrics
+```
+
+### Status
 
 ```bash
 queuectl status
 ```
 
-```bash
-queuectl config show
-```
+This reports counts for pending, processing, completed, failed, and dead jobs, plus the active worker count.
 
-```bash
-queuectl worker start --count 2
-```
-
-```bash
-queuectl enqueue '{"id":"codespace-job","command":"echo Running in Codespaces"}'
-```
-
-```bash
-queuectl status
-```
+### List jobs
 
 ```bash
 queuectl list --state completed
 ```
 
-```bash
-queuectl metrics
-```
+Supported states:
 
----
+- pending
+- processing
+- completed
+- failed
+- dead
 
-# Additional Bonus Feature Demonstration
-
-## Priority Queue
-
-```bash
-queuectl enqueue '{"id":"priority-demo","command":"echo Priority","priority":1}'
-```
-
-## Scheduled Job
+### Worker management
 
 ```bash
-queuectl enqueue '{"id":"scheduled-demo","command":"echo Scheduled","run_after":"2030-01-01T00:00:00Z"}'
+queuectl worker start --count 3
+queuectl worker stop
 ```
 
-## Timeout Handling
+The current implementation accepts worker counts from `1` through `128`.
 
-```bash
-queuectl enqueue '{"id":"timeout-demo","command":"sleep 5","timeout":1000}'
-```
-
-## Metrics
+### Metrics
 
 ```bash
 queuectl metrics
 ```
 
-## Configuration
+The metrics output includes totals, retry counts, worker counts, success/failure rates, uptime, total commands executed, average runtime, and max runtime.
+
+### DLQ operations
+
+```bash
+queuectl dlq list
+queuectl dlq retry <jobId>
+```
+
+A dead job is moved back to the pending state and its attempt count is reset before it becomes eligible to run again.
+
+### Configuration
 
 ```bash
 queuectl config show
+queuectl config set max-retries 5
+queuectl config set backoff exponential
+queuectl config set delay-base 2000
+queuectl config set timeout 10000
 ```
 
-## Queue Status
+## Configuration reference
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| max-retries | number | 3 | Maximum retries allowed for a job |
+| backoff | string | exponential | Backoff strategy; `fixed` or `exponential` |
+| delay-base | number | 5000 | Base delay used for retry backoff in milliseconds |
+| timeout | number | 5000 | Per-job execution timeout in milliseconds |
+
+## Environment variables
+
+| Variable | Purpose |
+| --- | --- |
+| DB_PATH | Overrides the SQLite database path |
+| SOCKET_PATH | Overrides the daemon IPC socket path |
+| PORT | Overrides the dashboard port |
+
+## Testing
+
+The project uses Vitest for integration coverage.
 
 ```bash
-queuectl status
+npm test
+npm run test:coverage
 ```
 
+The current test suite exercises:
+
+- basic job completion
+- priority handling
+- retry and dead-letter behavior
+- multiple workers
+- invalid input handling
+- persistence across daemon restart
+
+## Performance notes
+
+QueueCTL favors simplicity and locality over distributed scale.
+
+- SQLite is used for durable job state and low-friction local persistence.
+- better-sqlite3 keeps the database access path straightforward and fast for this single-host model.
+- IPC over a local socket keeps the CLI and dashboard connected to the same daemon without adding an external transport layer.
+- Child processes are used for workers because the runtime already needs a simple, isolated execution boundary for each job.
+
+### Tradeoffs
+
+This design is intentionally local-first. It is well suited to development, experimentation, and small automations, but it does not attempt to provide distributed coordination, remote worker fleets, or multi-host failover.
+
+## Design decisions
+
+The current implementation favors an explicit and inspectable runtime model:
+
+- the daemon owns queue semantics and state transitions
+- workers are simple execution agents that poll and claim work
+- SQLite is the source of truth for job state and configuration
+- the CLI and dashboard are thin clients to the daemon over IPC
+
+That separation makes the system easier to reason about than a single monolithic process while staying small enough to understand quickly.
+
+## Known limitations
+
+The implementation is intentionally modest.
+
+- It is not a distributed queue system.
+- Workers are local child processes rather than remote workers.
+- The CLI and dashboard are designed for a single host because they rely on a local socket.
+- There is no built-in authentication or authorization layer.
+- There is no cron-style scheduler; run_after is a single delay timestamp rather than a recurring schedule.
+
+## Future improvements
+
+The following ideas are explicitly outside the current implementation and are not yet implemented:
+
+- remote worker execution
+- multi-host clustering
+- durable job replay and observability beyond the current metrics surface
+- richer dashboard workflows and filtering
+- queue backpressure and concurrency controls beyond the current worker count model
+
+## Contributor guide
+
+Contributors should begin with the implementation and tests, then make the smallest change that solves the problem.
+
+1. Reproduce the issue with the existing scenarios.
+2. Make a focused change in the daemon, worker, database, or command layer.
+3. Add or update tests when runtime behavior changes.
+4. Rebuild and verify the full test suite.
+
+For deeper contributor guidance, see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+
+## Documentation map
+
+| [docs/USER_GUIDE.md](docs/USER_GUIDE.md) | product-facing usage guide |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | engineering design document |
+| [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | contributor workflow and debugging guide |
+| [VALIDATION_REPORT.md](docs/VALIDATION_REPORT.md) | Assignment compliance, feature verification and evaluation report |
+
 ---
 
-# Features Demonstrated
+# ✅ Assignment Validation
 
-## Core Assignment Requirements
+This repository has been validated against every mandatory and bonus requirement from the internship assignment.
 
-- Queue initialization
-- Daemon startup
-- Worker management
-- Job enqueueing
-- Parallel workers
-- Retry mechanism
-- Exponential backoff
-- Dead Letter Queue (DLQ)
-- DLQ retry
-- Persistent job storage
-- Queue state inspection
-- Runtime metrics
-- Configuration management
-- Graceful worker shutdown
+The validation includes:
 
-## Bonus Features
+- Functional requirements
+- CLI command verification
+- Worker lifecycle
+- Retry & DLQ validation
+- Persistence checks
+- Documentation review
+- Testing coverage
+- Bonus feature verification
 
-- Priority queues
-- Scheduled jobs (`run_after`)
-- Job timeout handling
-- Runtime metrics dashboard
-- Web dashboard
-- REST API endpoints
-- GitHub Codespaces support
-- Browser-based verification environment
+📄 **Detailed report**
 
----
+➡️ [Documentation Validation Report](docs/VALIDATION_REPORT.md)
 
-**Following the above sequence verifies nearly every implemented feature of QueueCTL, including all mandatory assignment requirements and the additional bonus capabilities.**
