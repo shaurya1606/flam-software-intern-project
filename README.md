@@ -60,11 +60,37 @@
 </p>
 
 
+
 QueueCTL is a lightweight background job queue for Node.js built around a persistent SQLite backend and a long-running daemon.
 
 It provides durable job execution, worker management, retries, dead-letter queues and runtime inspection through both a CLI and a lightweight dashboard.
 
 > QueueCTL is not a distributed queue system. It is a compact, implementation-friendly queue for local development, automation, and learning about job orchestration without introducing a large infrastructure stack.
+
+## 🎥 Project Demonstration
+
+See QueueCTL running end-to-end, including installation, worker management, retries, DLQ handling, dashboard, and live job execution.
+
+<p align="center">
+
+[![Watch Demo](https://img.shields.io/badge/▶%20Watch%20Demo-Google%20Drive-4285F4?style=for-the-badge&logo=google-drive&logoColor=white)](https://drive.google.com/file/d/1Qem70Ic72vVo38wqdKxafCSAmEWHFq1P/view?usp=sharing)
+
+</p>
+
+> **What's covered**
+>
+> - Project overview
+> - Repository walkthrough
+> - Local setup
+> - GitHub Codespaces execution
+> - Queue operations
+> - Worker management
+> - Retry & Exponential Backoff
+> - Dead Letter Queue (DLQ)
+> - Configuration management
+> - Dashboard walkthrough
+> - Live API demonstration
+> - Bonus features (Priority Jobs, Delayed Jobs, Timeout Handling)
 
 ## 🎥 Project Demonstration
 
@@ -348,6 +374,8 @@ The latest deployment is available on Railway.
 | 📊 Status API | https://flam-software-intern-project-production.up.railway.app/api/status |
 | 📋 Jobs API | https://flam-software-intern-project-production.up.railway.app/api/jobs |
 | 📈 Metrics API | https://flam-software-intern-project-production.up.railway.app/api/metrics |
+
+
 
 
 
